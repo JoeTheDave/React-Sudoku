@@ -42080,11 +42080,25 @@ var actionTypes = require('../flux/constants').actionTypes;
 
 module.exports = {
 
-    initializeApplication: function initializeApplication() {
-        dispatcher.dispatch({
-            actionType: actionTypes.INITIALIZE_APPLICATION
-        });
-    }
+  initializeApplication: function initializeApplication() {
+    dispatcher.dispatch({
+      actionType: actionTypes.INITIALIZE_APPLICATION
+    });
+  },
+
+  gridSquareMouseEntered: function gridSquareMouseEntered(gridSquare) {
+    dispatcher.dispatch({
+      actionType: actionTypes.GRID_SQUARE_MOUSE_ENTERED,
+      gridSquare: gridSquare
+    });
+  },
+
+  gridSquareMouseLeft: function gridSquareMouseLeft(gridSquare) {
+    dispatcher.dispatch({
+      actionType: actionTypes.GRID_SQUARE_MOUSE_LEFT,
+      gridSquare: gridSquare
+    });
+  }
 
 };
 
@@ -42114,20 +42128,26 @@ var Application = React.createClass({ displayName: "Application",
       border: 'solid 1px #CCCCCC'
     };
   },
+  clearStyle: function clearStyle() {
+    return {
+      clear: 'both'
+    };
+  },
   render: function render() {
-    console.log(this.state);
+    //console.log(this.state);
     return React.createElement("div", { style: this.composeStyles() }, this.state.grid.map(function (gridCell, index) {
       return React.createElement(GridSquare, { key: index, squareData: gridCell });
-    }));
+    }), React.createElement("div", { style: this.clearStyle() }));
   }
 });
 
 module.exports = Application;
 
-},{"../actions/applicationActions":165,"../stores/applicationStore":171,"./gridSquare":167,"react":164}],167:[function(require,module,exports){
+},{"../actions/applicationActions":165,"../stores/applicationStore":172,"./gridSquare":167,"react":164}],167:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
+var applicationActions = require('../actions/applicationActions');
 
 var GridSquare = React.createClass({ displayName: "GridSquare",
   propTypes: {
@@ -42135,8 +42155,9 @@ var GridSquare = React.createClass({ displayName: "GridSquare",
   },
   composeStyles: function composeStyles() {
     var styles = {
-      display: 'inline-block',
-      backgroundColor: '#E9E9E9',
+      //display: 'inline-block',
+      float: 'left',
+      backgroundColor: this.props.squareData.color,
       fontWeight: 'bold',
       padding: '10px',
       fontSize: '24px',
@@ -42155,23 +42176,38 @@ var GridSquare = React.createClass({ displayName: "GridSquare",
     }
     return styles;
   },
+  onMouseEnter: function onMouseEnter() {
+    applicationActions.gridSquareMouseEntered(this.props.squareData);
+  },
+  onMouseLeave: function onMouseLeave() {
+    applicationActions.gridSquareMouseLeft(this.props.squareData);
+  },
   render: function render() {
-    return React.createElement("div", { style: this.composeStyles() }, this.props.squareData.number);
+    return React.createElement("div", { style: this.composeStyles(), onMouseEnter: this.onMouseEnter, onMouseLeave: this.onMouseLeave }, this.props.squareData.number);
   }
 });
 
 module.exports = GridSquare;
 
-},{"react":164}],168:[function(require,module,exports){
+},{"../actions/applicationActions":165,"react":164}],168:[function(require,module,exports){
 'use strict';
 
 var keymirror = require('keymirror');
 
 module.exports = {
-    actionTypes: keymirror({
-        INITIALIZE_APPLICATION: null
-    }),
-    changeEvent: 'change'
+  actionTypes: keymirror({
+    INITIALIZE_APPLICATION: null,
+    GRID_SQUARE_MOUSE_ENTERED: null,
+    GRID_SQUARE_MOUSE_LEFT: null
+  }),
+  changeEvent: 'change',
+  styleRules: {
+    colors: {
+      gray: '#E9E9E9',
+      yellow: '#FFFF00',
+      orange: '#FFAA00'
+    }
+  }
 };
 
 },{"keymirror":7}],169:[function(require,module,exports){
@@ -42192,12 +42228,182 @@ React.render(React.createElement(Application, null), $('#content')[0]);
 },{"./components/application":166,"jquery":6,"react":164}],171:[function(require,module,exports){
 'use strict';
 
+var _ = require('lodash');
+
+var puzzleData = null;
+
+var generatePuzzleData = function generatePuzzleData() {
+  initializeGridData();
+  return applicationData.grid;
+};
+
+var sudokuData = function sudokuData() {
+  this.grid = [];
+  this.insertionAttempts = 0;
+};
+
+////////////////////////////////////////////////////////////////////
+
+var insertionAttempts = 0;
+var applicationData = {
+  grid: []
+};
+
+var generatePuzzleData = function generatePuzzleData() {
+  initializeGridData();
+  return applicationData.grid;
+};
+
+var initializeGridData = function initializeGridData() {
+  applicationData.grid = [];
+  for (var x = 0; x <= 80; x++) {
+    applicationData.grid.push(createGridSquare(x));
+  }
+  intializeGridRelationships();
+  generatePuzzle();
+};
+
+var createGridSquare = function createGridSquare(index) {
+  return {
+    index: index,
+    number: null,
+    relationships: [],
+    color: null
+  };
+};
+
+var intializeGridRelationships = function intializeGridRelationships() {
+  _.each(applicationData.grid, function (gridSquare) {
+    var rowStartIndex = gridSquare.index - gridSquare.index % 9;
+    var colStartIndex = gridSquare.index % 9;
+    var grid3x3StartIndex = gridSquare.index - gridSquare.index % 27 + gridSquare.index % 9 - gridSquare.index % 3;
+    for (var x = 0; x <= 8; x++) {
+      establishGridSquareRelationship(gridSquare, getGridSquareByIndex(rowStartIndex + x));
+      establishGridSquareRelationship(gridSquare, getGridSquareByIndex(colStartIndex + x * 9));
+      establishGridSquareRelationship(gridSquare, getGridSquareByIndex(grid3x3StartIndex + x % 3 + Math.floor(x / 3) * 9));
+    }
+  });
+};
+
+var generatePuzzle = function generatePuzzle() {
+  while (getUndefinedGridSquares().length > 0) {
+    var gridSquare = getRandomUndefinedGridSquare();
+    attemptNumberInsertion(gridSquare);
+  }
+};
+
+var attemptNumberInsertion = function attemptNumberInsertion(gridSquare) {
+  var sequence = generateRandomSequence();
+  while (gridSquare.number === null && sequence.length > 0) {
+    var candidate = sequence.pop();
+    if (validateNumberInsertion(gridSquare, candidate)) {
+      gridSquare.number = candidate;
+    }
+  }
+  if (gridSquare.number === null) {
+    forceNumberInsertion(gridSquare);
+  }
+  insertionAttempts++;
+  if (insertionAttempts >= 200) {
+    insertionAttempts = 0;
+    clearRandomGridSquares(20);
+  }
+};
+
+var validateNumberInsertion = function validateNumberInsertion(gridSquare, number) {
+  return calculateCandidateConflicts(gridSquare, number) === 0;
+};
+
+var forceNumberInsertion = function forceNumberInsertion(gridSquare) {
+  var candidateConflictsSummary = generateCandidateConflictsSummary(gridSquare);
+  var numberToForce = candidateConflictsSummary[0].number;
+  elmininateConflictsForNumber(gridSquare, numberToForce);
+  gridSquare.number = numberToForce;
+};
+
+var calculateCandidateConflicts = function calculateCandidateConflicts(gridSquare, number) {
+  var conflicts = 0;
+  _.each(gridSquare.relationships, function (relatedGridSquare) {
+    if (relatedGridSquare.number === number) {
+      conflicts++;
+    }
+  });
+  return conflicts;
+};
+
+var generateCandidateConflictsSummary = function generateCandidateConflictsSummary(gridSquare) {
+  var summary = [];
+  _.each(generateRandomSequence(), function (number) {
+    summary.push({ number: number, conflicts: calculateCandidateConflicts(gridSquare, number) });
+  });
+  return _.sortBy(summary, function (conflictSummaryItem) {
+    return conflictSummaryItem.conflicts;
+  });
+};
+
+var clearRandomGridSquares = function clearRandomGridSquares(numberToClear) {
+  var populatedGridSquares = _.take(_.shuffle(_.filter(applicationData.grid, function (gridSquare) {
+    return gridSquare.number !== null;
+  })), numberToClear);
+  _.each(populatedGridSquares, function (gridSquare) {
+    gridSquare.number = null;
+  });
+};
+
+var elmininateConflictsForNumber = function elmininateConflictsForNumber(gridSquare, number) {
+  _.each(gridSquare.relationships, function (relatedGridSquare) {
+    if (relatedGridSquare.number === number) {
+      relatedGridSquare.number = null;
+    }
+  });
+};
+
+var establishGridSquareRelationship = function establishGridSquareRelationship(gridSquare, relatedGridSquare) {
+  if (!_.contains(gridSquare.relationships, relatedGridSquare) && gridSquare.index !== relatedGridSquare.index) {
+    gridSquare.relationships.push(relatedGridSquare);
+  }
+};
+
+var getGridSquareByIndex = function getGridSquareByIndex(index) {
+  return _.find(applicationData.grid, function (gridSquare) {
+    return gridSquare.index === index;
+  });
+};
+
+var getUndefinedGridSquares = function getUndefinedGridSquares() {
+  return _.filter(applicationData.grid, function (gridSquare) {
+    return gridSquare.number === null;
+  });
+};
+
+var getRandomUndefinedGridSquare = function getRandomUndefinedGridSquare() {
+  var undefinedGridSquares = getUndefinedGridSquares();
+  if (undefinedGridSquares.length > 0) {
+    var randomIndex = _.random(undefinedGridSquares.length - 1);
+    return undefinedGridSquares[randomIndex];
+  }
+  return null;
+};
+
+var generateRandomSequence = function generateRandomSequence() {
+  return _.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+};
+
+module.exports = {
+  generatePuzzleData: generatePuzzleData
+};
+
+},{"lodash":8}],172:[function(require,module,exports){
+'use strict';
+
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 var _ = require('lodash');
 var actionTypes = require('../flux/constants').actionTypes;
 var CHANGE_EVENT = require('../flux/constants').changeEvent;
+var styleRules = require('../flux/constants').styleRules;
 var dispatcher = require('../flux/dispatcher');
+var sudokuService = require('../services/Sudoku.js');
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -42207,26 +42413,30 @@ var applicationData = {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var initializeGridData = function initializeGridData() {
-  for (var x = 0; x <= 80; x++) {
-    applicationData.grid.push(createGridSquare(x));
-  }
+var initialize = function initialize() {
+  applicationData.grid = sudokuService.generatePuzzleData();
+  resetAllGridSquareColors();
 };
 
-var createGridSquare = function createGridSquare(index) {
-  return {
-    index: index,
-    number: 0,
-    relationships: [],
-    color: 0
-  };
+var resetAllGridSquareColors = function resetAllGridSquareColors() {
+  _.each(applicationData.grid, function (gridSquare) {
+    gridSquare.color = styleRules.colors.gray;
+  });
 };
 
-var numberOfUndefinedGridCells = function numberOfUndefinedGridCells() {
-  var count = 0;
-  for (var x = 0; x <= 80; x++) {
-    count += applicationData.grid[x].number === 0 ? 1 : 0;
-  }
+var hightlightRelationships = function hightlightRelationships(gridSquare) {
+  gridSquare.color = styleRules.colors.yellow;
+  _.each(gridSquare.relationships, function (relatedGridSquare) {
+    relatedGridSquare.color = styleRules.colors.orange;
+  });
+};
+
+var gridSquareHover = function gridSquareHover(gridSquare) {
+  hightlightRelationships(gridSquare);
+};
+
+var gridSquareExit = function gridSquareExit(gridSquare) {
+  resetAllGridSquareColors();
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42249,9 +42459,16 @@ var applicationStore = assign({}, EventEmitter.prototype, {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 dispatcher.register(function (action) {
+  //console.log(action.actionType);
   switch (action.actionType) {
     case actionTypes.INITIALIZE_APPLICATION:
-      initializeGridData();
+      initialize();
+      break;
+    case actionTypes.GRID_SQUARE_MOUSE_ENTERED:
+      gridSquareHover(action.gridSquare);
+      break;
+    case actionTypes.GRID_SQUARE_MOUSE_LEFT:
+      gridSquareExit(action.gridSquare);
       break;
   }
   applicationStore.emitChange();
@@ -42261,4 +42478,4 @@ dispatcher.register(function (action) {
 
 module.exports = applicationStore;
 
-},{"../flux/constants":168,"../flux/dispatcher":169,"events":1,"lodash":8,"object-assign":9}]},{},[170]);
+},{"../flux/constants":168,"../flux/dispatcher":169,"../services/Sudoku.js":171,"events":1,"lodash":8,"object-assign":9}]},{},[170]);

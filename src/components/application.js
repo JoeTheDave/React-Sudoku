@@ -23,8 +23,13 @@ var Application = React.createClass({
       border: 'solid 1px #CCCCCC'
     };
   },
+  clearStyle: function () {
+    return {
+      clear: 'both'
+    }
+  },
   render: function() {
-    console.log(this.state);
+    //console.log(this.state);
     return (
       <div style={this.composeStyles()}>
         {this.state.grid.map(function(gridCell, index) {
@@ -32,6 +37,7 @@ var Application = React.createClass({
             <GridSquare key={index} squareData={gridCell} />
           );
         })}
+        <div style={this.clearStyle()}></div>
       </div>
     );
   }

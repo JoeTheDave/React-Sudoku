@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var applicationActions = require('../actions/applicationActions');
 
 var GridSquare = React.createClass({
   propTypes: {
@@ -8,8 +9,9 @@ var GridSquare = React.createClass({
   },
   composeStyles: function () {
     var styles = {
-      display: 'inline-block',
-      backgroundColor: '#E9E9E9',
+      //display: 'inline-block',
+      float: 'left',
+      backgroundColor: this.props.squareData.color,
       fontWeight: 'bold',
       padding: '10px',
       fontSize: '24px',
@@ -28,9 +30,15 @@ var GridSquare = React.createClass({
     }
     return styles;
   },
+  onMouseEnter: function () {
+    applicationActions.gridSquareMouseEntered(this.props.squareData);
+  },
+  onMouseLeave: function () {
+    applicationActions.gridSquareMouseLeft(this.props.squareData);
+  },
   render: function () {
     return (
-      <div style={this.composeStyles()}>
+      <div style={this.composeStyles()} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
         {this.props.squareData.number}
       </div>
     );
