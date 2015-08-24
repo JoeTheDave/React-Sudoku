@@ -9,7 +9,6 @@ var GridSquare = React.createClass({
   },
   composeStyles: function () {
     var styles = {
-      //display: 'inline-block',
       float: 'left',
       backgroundColor: this.props.squareData.color,
       fontWeight: 'bold',
@@ -21,12 +20,16 @@ var GridSquare = React.createClass({
       boxSizing: 'border-box',
       fontFamily: 'verdana'
     };
-    var index = this.props.squareData.index;
-    if ((index >= 27 && index <= 35) || (index >= 54 && index <= 62)) {
-      styles.marginTop = '5px';
+    var id = this.props.squareData.id;
+    if ((id >= 27 && id <= 35) || (id >= 54 && id <= 62)) {
+      styles.borderTop = 'solid 5px #CCCCCC';
+    } else {
+      styles.borderTop = 'solid 1px #CCCCCC';
     }
-    if (((index + 1) % 3 === 0) && ((index + 1) % 9 !== 0)) {
-      styles.marginRight = '5px';
+    if (((id + 1) % 3 === 0) && ((id + 1) % 9 !== 0)) {
+      styles.borderRight = 'solid 5px #CCCCCC';
+    } else {
+      styles.borderRight = 'solid 1px #CCCCCC';
     }
     return styles;
   },

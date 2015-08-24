@@ -18,9 +18,10 @@ var Application = React.createClass({
   },
   composeStyles: function () {
     return {
-      width: '460px',
+      width: '450px',
       margin: '100px auto',
-      border: 'solid 1px #CCCCCC'
+      borderLeft: 'solid 1px #CCCCCC',
+      borderBottom: 'solid 1px #CCCCCC'
     };
   },
   clearStyle: function () {
