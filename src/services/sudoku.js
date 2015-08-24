@@ -15,6 +15,7 @@ var SudokuData = function () {
 SudokuData.prototype.generate = function () {
 	this.createGridSquares();
 	this.establishRelationships();
+  this.establishDirectNeighborRelationships();
 	this.populate();
 };
 SudokuData.prototype.createGridSquares = function () {
@@ -35,9 +36,29 @@ SudokuData.prototype.establishRelationships = function () {
     }
   });
 };
-SudokuData.prototype.findGridSquareById = function (id) {
-	return _.find(this.grid, function (gridSquare) {
-    return gridSquare.id === id;
+SudokuData.prototype.establishDirectNeighborRelationships = function () {
+  var self = this;
+  _.each(this.grid, function (gridSquare) {
+    if (gridSquare.id <= 8) {
+      gridSquare.upperNeighbor = self.findGridSquareById(gridSquare.id + 72);
+    } else {
+      gridSquare.upperNeighbor = self.findGridSquareById(gridSquare.id - 9);
+    }
+    if (gridSquare.id % 9 === 8) {
+      gridSquare.rightNeighbor = self.findGridSquareById(gridSquare.id - 8);
+    } else {
+      gridSquare.rightNeighbor = self.findGridSquareById(gridSquare.id + 1);
+    }
+    if (gridSquare.id >= 72) {
+      gridSquare.lowerNeighbor = self.findGridSquareById(gridSquare.id - 72);
+    } else {
+      gridSquare.lowerNeighbor = self.findGridSquareById(gridSquare.id + 9);
+    }
+    if (gridSquare.id % 9 === 0) {
+      gridSquare.leftNeighbor = self.findGridSquareById(gridSquare.id + 8);
+    } else {
+      gridSquare.leftNeighbor = self.findGridSquareById(gridSquare.id - 1);
+    }
   });
 };
 SudokuData.prototype.populate = function () {
@@ -51,6 +72,11 @@ SudokuData.prototype.populate = function () {
 			populationCycles -= 100;
 		}
 	}
+};
+SudokuData.prototype.findGridSquareById = function (id) {
+  return _.find(this.grid, function (gridSquare) {
+    return gridSquare.id === id;
+  });
 };
 SudokuData.prototype.hasUnpopulatedGridSquares = function () {
 	return this.getUndefinedGridSquares().length !== 0;
@@ -80,6 +106,10 @@ var GridSquare = function(id) {
 	this.id = id;
   this.number = null;
   this.relationships = [];
+  this.upperNeighbor = null;
+  this.rightNeighbor = null;
+  this.lowerNeighbor = null;
+  this.leftNeighbor = null;
 };
 GridSquare.prototype.establishRelationship = function (relatedGridSquare) {
 	if((!this.alreadyHasRelationship(relatedGridSquare)) && this.id !== relatedGridSquare.id) {

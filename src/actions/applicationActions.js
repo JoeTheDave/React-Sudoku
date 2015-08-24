@@ -11,16 +11,9 @@ module.exports = {
     });
 	},
 
-	gridSquareMouseEntered: function(gridSquare) {
+	gridSquareSelected: function(gridSquare) {
     dispatcher.dispatch({
-      actionType: actionTypes.GRID_SQUARE_MOUSE_ENTERED,
-      gridSquare: gridSquare
-    });
-	},
-
-	gridSquareMouseLeft: function(gridSquare) {
-    dispatcher.dispatch({
-      actionType: actionTypes.GRID_SQUARE_MOUSE_LEFT,
+      actionType: actionTypes.GRID_SQUARE_SELECTED,
       gridSquare: gridSquare
     });
 	}

@@ -2,6 +2,7 @@
 
 var React = require('react');
 var applicationActions = require('../actions/applicationActions');
+var gridSquareStates = require('../flux/constants').gridSquareStates;
 
 var GridSquare = React.createClass({
   propTypes: {
@@ -10,7 +11,6 @@ var GridSquare = React.createClass({
   composeStyles: function () {
     var styles = {
       float: 'left',
-      backgroundColor: this.props.squareData.color,
       fontWeight: 'bold',
       padding: '10px',
       fontSize: '24px',
@@ -18,7 +18,13 @@ var GridSquare = React.createClass({
       height: '50px',
       textAlign: 'center',
       boxSizing: 'border-box',
-      fontFamily: 'verdana'
+      fontFamily: 'verdana',
+      cursor: 'pointer',
+
+      userSelect: 'none',
+      WebkitUserSelect: 'none',
+      MozUserSelect: 'none',
+      msUserSelect: 'none'
     };
     var id = this.props.squareData.id;
     if ((id >= 27 && id <= 35) || (id >= 54 && id <= 62)) {
@@ -31,18 +37,33 @@ var GridSquare = React.createClass({
     } else {
       styles.borderRight = 'solid 1px #CCCCCC';
     }
+    switch (this.props.squareData.state) {
+      case gridSquareStates.PASSIVE:
+        styles.backgroundColor = '#E9E9E9';
+        break;
+      case gridSquareStates.ACTIVE:
+        styles.backgroundColor = '#FFFFCC';
+        break;
+      case gridSquareStates.RELATED_TO_ACTIVE:
+        styles.backgroundColor = '#C1D7DE';
+        break;
+    }
     return styles;
   },
-  onMouseEnter: function () {
-    applicationActions.gridSquareMouseEntered(this.props.squareData);
+  gridSquareSelected: function () {
+    applicationActions.gridSquareSelected(this.props.squareData);
   },
-  onMouseLeave: function () {
-    applicationActions.gridSquareMouseLeft(this.props.squareData);
+  content: function () {
+    if (this.props.squareData.isStatic) {
+      return this.props.squareData.number;
+    } else {
+      return '';
+    }
   },
   render: function () {
     return (
-      <div style={this.composeStyles()} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
-        {this.props.squareData.number}
+      <div style={this.composeStyles()} onClick={this.gridSquareSelected}>
+        {this.content()}
       </div>
     );
   }

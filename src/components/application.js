@@ -2,6 +2,7 @@
 
 var React = require('react');
 var applicationActions = require('../actions/applicationActions');
+var globalActions = require('../actions/globalActions')
 var applicationStore = require('../stores/applicationStore');
 var GridSquare = require('./gridSquare');
 
@@ -12,6 +13,7 @@ var Application = React.createClass({
   componentDidMount: function() {
     applicationStore.addChangeListener(this.updateState);
     applicationActions.initializeApplication();
+    globalActions.registerGlobalEventHandlers();
   },
   updateState: function() {
     this.setState(applicationStore.getData());

@@ -42086,27 +42086,124 @@ module.exports = {
     });
   },
 
-  gridSquareMouseEntered: function gridSquareMouseEntered(gridSquare) {
+  gridSquareSelected: function gridSquareSelected(gridSquare) {
     dispatcher.dispatch({
-      actionType: actionTypes.GRID_SQUARE_MOUSE_ENTERED,
-      gridSquare: gridSquare
-    });
-  },
-
-  gridSquareMouseLeft: function gridSquareMouseLeft(gridSquare) {
-    dispatcher.dispatch({
-      actionType: actionTypes.GRID_SQUARE_MOUSE_LEFT,
+      actionType: actionTypes.GRID_SQUARE_SELECTED,
       gridSquare: gridSquare
     });
   }
 
 };
 
-},{"../flux/constants":168,"../flux/dispatcher":169}],166:[function(require,module,exports){
+},{"../flux/constants":169,"../flux/dispatcher":170}],166:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var dispatcher = require('../flux/dispatcher');
+var actionTypes = require('../flux/constants').actionTypes;
+
+module.exports = {
+
+					registerGlobalEventHandlers: function registerGlobalEventHandlers() {
+										global.onkeydown = function (event) {
+															switch (event.keyCode) {
+																				case 37:
+																									dispatcher.dispatch({ actionType: actionTypes.LEFT_ARROW_KEY_PRESSED });
+																									break;
+																				case 38:
+																									dispatcher.dispatch({ actionType: actionTypes.UP_ARROW_KEY_PRESSED });
+																									break;
+																				case 39:
+																									dispatcher.dispatch({ actionType: actionTypes.RIGHT_ARROW_KEY_PRESSED });
+																									break;
+																				case 40:
+																									dispatcher.dispatch({ actionType: actionTypes.DOWN_ARROW_KEY_PRESSED });
+																									break;
+																				case 27:
+																									dispatcher.dispatch({ actionType: actionTypes.ESC_KEY_PRESSED });
+																									break;
+																				case 32:
+																									dispatcher.dispatch({ actionType: actionTypes.SPACE_KEY_PRESSED });
+																									break;
+																				case 49:
+																									if (event.shiftKey) {
+																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_ONE_KEY_PRESSED });
+																									} else {
+																														dispatcher.dispatch({ actionType: actionTypes.ONE_KEY_PRESSED });
+																									}
+																									break;
+																				case 50:
+																									if (event.shiftKey) {
+																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_TWO_KEY_PRESSED });
+																									} else {
+																														dispatcher.dispatch({ actionType: actionTypes.TWO_KEY_PRESSED });
+																									}
+																									break;
+																				case 51:
+																									if (event.shiftKey) {
+																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_THREE_KEY_PRESSED });
+																									} else {
+																														dispatcher.dispatch({ actionType: actionTypes.THREE_KEY_PRESSED });
+																									}
+																									break;
+																				case 52:
+																									if (event.shiftKey) {
+																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_FOUR_KEY_PRESSED });
+																									} else {
+																														dispatcher.dispatch({ actionType: actionTypes.FOUR_KEY_PRESSED });
+																									}
+																									break;
+																				case 53:
+																									if (event.shiftKey) {
+																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_FIVE_KEY_PRESSED });
+																									} else {
+																														dispatcher.dispatch({ actionType: actionTypes.FIVE_KEY_PRESSED });
+																									}
+																									break;
+																				case 54:
+																									if (event.shiftKey) {
+																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_SIX_KEY_PRESSED });
+																									} else {
+																														dispatcher.dispatch({ actionType: actionTypes.SIX_KEY_PRESSED });
+																									}
+																									break;
+																				case 55:
+																									if (event.shiftKey) {
+																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_SEVEN_KEY_PRESSED });
+																									} else {
+																														dispatcher.dispatch({ actionType: actionTypes.SEVEN_KEY_PRESSED });
+																									}
+																									break;
+																				case 56:
+																									if (event.shiftKey) {
+																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_EIGHT_KEY_PRESSED });
+																									} else {
+																														dispatcher.dispatch({ actionType: actionTypes.EIGHT_KEY_PRESSED });
+																									}
+																									break;
+																				case 57:
+																									if (event.shiftKey) {
+																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_NINE_KEY_PRESSED });
+																									} else {
+																														dispatcher.dispatch({ actionType: actionTypes.NINE_KEY_PRESSED });
+																									}
+																									break;
+																				default:
+																									//console.log(event.keyCode);
+																									break;
+															}
+										};
+					}
+
+};
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../flux/constants":169,"../flux/dispatcher":170}],167:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
 var applicationActions = require('../actions/applicationActions');
+var globalActions = require('../actions/globalActions');
 var applicationStore = require('../stores/applicationStore');
 var GridSquare = require('./gridSquare');
 
@@ -42117,6 +42214,7 @@ var Application = React.createClass({ displayName: "Application",
   componentDidMount: function componentDidMount() {
     applicationStore.addChangeListener(this.updateState);
     applicationActions.initializeApplication();
+    globalActions.registerGlobalEventHandlers();
   },
   updateState: function updateState() {
     this.setState(applicationStore.getData());
@@ -42144,11 +42242,12 @@ var Application = React.createClass({ displayName: "Application",
 
 module.exports = Application;
 
-},{"../actions/applicationActions":165,"../stores/applicationStore":172,"./gridSquare":167,"react":164}],167:[function(require,module,exports){
+},{"../actions/applicationActions":165,"../actions/globalActions":166,"../stores/applicationStore":173,"./gridSquare":168,"react":164}],168:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
 var applicationActions = require('../actions/applicationActions');
+var gridSquareStates = require('../flux/constants').gridSquareStates;
 
 var GridSquare = React.createClass({ displayName: "GridSquare",
   propTypes: {
@@ -42157,7 +42256,6 @@ var GridSquare = React.createClass({ displayName: "GridSquare",
   composeStyles: function composeStyles() {
     var styles = {
       float: 'left',
-      backgroundColor: this.props.squareData.color,
       fontWeight: 'bold',
       padding: '10px',
       fontSize: '24px',
@@ -42165,7 +42263,13 @@ var GridSquare = React.createClass({ displayName: "GridSquare",
       height: '50px',
       textAlign: 'center',
       boxSizing: 'border-box',
-      fontFamily: 'verdana'
+      fontFamily: 'verdana',
+      cursor: 'pointer',
+
+      userSelect: 'none',
+      WebkitUserSelect: 'none',
+      MozUserSelect: 'none',
+      msUserSelect: 'none'
     };
     var id = this.props.squareData.id;
     if (id >= 27 && id <= 35 || id >= 54 && id <= 62) {
@@ -42178,22 +42282,37 @@ var GridSquare = React.createClass({ displayName: "GridSquare",
     } else {
       styles.borderRight = 'solid 1px #CCCCCC';
     }
+    switch (this.props.squareData.state) {
+      case gridSquareStates.PASSIVE:
+        styles.backgroundColor = '#E9E9E9';
+        break;
+      case gridSquareStates.ACTIVE:
+        styles.backgroundColor = '#FFFFCC';
+        break;
+      case gridSquareStates.RELATED_TO_ACTIVE:
+        styles.backgroundColor = '#C1D7DE';
+        break;
+    }
     return styles;
   },
-  onMouseEnter: function onMouseEnter() {
-    applicationActions.gridSquareMouseEntered(this.props.squareData);
+  gridSquareSelected: function gridSquareSelected() {
+    applicationActions.gridSquareSelected(this.props.squareData);
   },
-  onMouseLeave: function onMouseLeave() {
-    applicationActions.gridSquareMouseLeft(this.props.squareData);
+  content: function content() {
+    if (this.props.squareData.isStatic) {
+      return this.props.squareData.number;
+    } else {
+      return '';
+    }
   },
   render: function render() {
-    return React.createElement("div", { style: this.composeStyles(), onMouseEnter: this.onMouseEnter, onMouseLeave: this.onMouseLeave }, this.props.squareData.number);
+    return React.createElement("div", { style: this.composeStyles(), onClick: this.gridSquareSelected }, this.content());
   }
 });
 
 module.exports = GridSquare;
 
-},{"../actions/applicationActions":165,"react":164}],168:[function(require,module,exports){
+},{"../actions/applicationActions":165,"../flux/constants":169,"react":164}],169:[function(require,module,exports){
 'use strict';
 
 var keymirror = require('keymirror');
@@ -42201,27 +42320,50 @@ var keymirror = require('keymirror');
 module.exports = {
   actionTypes: keymirror({
     INITIALIZE_APPLICATION: null,
-    GRID_SQUARE_MOUSE_ENTERED: null,
-    GRID_SQUARE_MOUSE_LEFT: null
+
+    LEFT_ARROW_KEY_PRESSED: null,
+    UP_ARROW_KEY_PRESSED: null,
+    RIGHT_ARROW_KEY_PRESSED: null,
+    DOWN_ARROW_KEY_PRESSED: null,
+    ESC_KEY_PRESSED: null,
+    SPACE_KEY_PRESSED: null,
+    SHIFT_ONE_KEY_PRESSED: null,
+    ONE_KEY_PRESSED: null,
+    SHIFT_TWO_KEY_PRESSED: null,
+    TWO_KEY_PRESSED: null,
+    SHIFT_THREE_KEY_PRESSED: null,
+    THREE_KEY_PRESSED: null,
+    SHIFT_FOUR_KEY_PRESSED: null,
+    FOUR_KEY_PRESSED: null,
+    SHIFT_FIVE_KEY_PRESSED: null,
+    FIVE_KEY_PRESSED: null,
+    SHIFT_SIX_KEY_PRESSED: null,
+    SIX_KEY_PRESSED: null,
+    SHIFT_SEVEN_KEY_PRESSED: null,
+    SEVEN_KEY_PRESSED: null,
+    SHIFT_EIGHT_KEY_PRESSED: null,
+    EIGHT_KEY_PRESSED: null,
+    SHIFT_NINE_KEY_PRESSED: null,
+    NINE_KEY_PRESSED: null,
+
+    GRID_SQUARE_SELECTED: null
   }),
   changeEvent: 'change',
-  styleRules: {
-    colors: {
-      gray: '#E9E9E9',
-      yellow: '#FFFF00',
-      orange: '#FFAA00'
-    }
-  }
+  gridSquareStates: keymirror({
+    PASSIVE: null,
+    ACTIVE: null,
+    RELATED_TO_ACTIVE: null
+  })
 };
 
-},{"keymirror":7}],169:[function(require,module,exports){
+},{"keymirror":7}],170:[function(require,module,exports){
 'use strict';
 
 var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":3}],170:[function(require,module,exports){
+},{"flux":3}],171:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -42229,7 +42371,7 @@ var $ = require('jquery');
 var Application = require('./components/application');
 React.render(React.createElement(Application, null), $('#content')[0]);
 
-},{"./components/application":166,"jquery":6,"react":164}],171:[function(require,module,exports){
+},{"./components/application":167,"jquery":6,"react":164}],172:[function(require,module,exports){
 'use strict';
 
 var _ = require('lodash');
@@ -42247,6 +42389,7 @@ var SudokuData = function SudokuData() {
 SudokuData.prototype.generate = function () {
   this.createGridSquares();
   this.establishRelationships();
+  this.establishDirectNeighborRelationships();
   this.populate();
 };
 SudokuData.prototype.createGridSquares = function () {
@@ -42267,9 +42410,29 @@ SudokuData.prototype.establishRelationships = function () {
     }
   });
 };
-SudokuData.prototype.findGridSquareById = function (id) {
-  return _.find(this.grid, function (gridSquare) {
-    return gridSquare.id === id;
+SudokuData.prototype.establishDirectNeighborRelationships = function () {
+  var self = this;
+  _.each(this.grid, function (gridSquare) {
+    if (gridSquare.id <= 8) {
+      gridSquare.upperNeighbor = self.findGridSquareById(gridSquare.id + 72);
+    } else {
+      gridSquare.upperNeighbor = self.findGridSquareById(gridSquare.id - 9);
+    }
+    if (gridSquare.id % 9 === 8) {
+      gridSquare.rightNeighbor = self.findGridSquareById(gridSquare.id - 8);
+    } else {
+      gridSquare.rightNeighbor = self.findGridSquareById(gridSquare.id + 1);
+    }
+    if (gridSquare.id >= 72) {
+      gridSquare.lowerNeighbor = self.findGridSquareById(gridSquare.id - 72);
+    } else {
+      gridSquare.lowerNeighbor = self.findGridSquareById(gridSquare.id + 9);
+    }
+    if (gridSquare.id % 9 === 0) {
+      gridSquare.leftNeighbor = self.findGridSquareById(gridSquare.id + 8);
+    } else {
+      gridSquare.leftNeighbor = self.findGridSquareById(gridSquare.id - 1);
+    }
   });
 };
 SudokuData.prototype.populate = function () {
@@ -42283,6 +42446,11 @@ SudokuData.prototype.populate = function () {
       populationCycles -= 100;
     }
   }
+};
+SudokuData.prototype.findGridSquareById = function (id) {
+  return _.find(this.grid, function (gridSquare) {
+    return gridSquare.id === id;
+  });
 };
 SudokuData.prototype.hasUnpopulatedGridSquares = function () {
   return this.getUndefinedGridSquares().length !== 0;
@@ -42312,6 +42480,10 @@ var GridSquare = function GridSquare(id) {
   this.id = id;
   this.number = null;
   this.relationships = [];
+  this.upperNeighbor = null;
+  this.rightNeighbor = null;
+  this.lowerNeighbor = null;
+  this.leftNeighbor = null;
 };
 GridSquare.prototype.establishRelationship = function (relatedGridSquare) {
   if (!this.alreadyHasRelationship(relatedGridSquare) && this.id !== relatedGridSquare.id) {
@@ -42373,7 +42545,7 @@ module.exports = {
   generatePuzzleData: generatePuzzleData
 };
 
-},{"lodash":8}],172:[function(require,module,exports){
+},{"lodash":8}],173:[function(require,module,exports){
 'use strict';
 
 var EventEmitter = require('events').EventEmitter;
@@ -42381,42 +42553,84 @@ var assign = require('object-assign');
 var _ = require('lodash');
 var actionTypes = require('../flux/constants').actionTypes;
 var CHANGE_EVENT = require('../flux/constants').changeEvent;
-var styleRules = require('../flux/constants').styleRules;
+var gridSquareStates = require('../flux/constants').gridSquareStates;
 var dispatcher = require('../flux/dispatcher');
-var sudokuService = require('../services/Sudoku.js');
+var sudokuService = require('../services/Sudoku');
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var applicationData = {
-  grid: []
+  grid: [],
+  selectedGridSquare: null
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var initialize = function initialize() {
   applicationData.grid = sudokuService.generatePuzzleData();
-  resetAllGridSquareColors();
+  addGridSquareProperties();
+  hideNumbers(45);
 };
 
-var resetAllGridSquareColors = function resetAllGridSquareColors() {
+var addGridSquareProperties = function addGridSquareProperties() {
   _.each(applicationData.grid, function (gridSquare) {
-    gridSquare.color = styleRules.colors.gray;
+    gridSquare.state = gridSquareStates.PASSIVE;
+    gridSquare.isStatic = true;
+    gridSquare.candidate = null;
   });
+};
+
+var hideNumbers = function hideNumbers(numberToHide) {
+  _.each(_.take(_.shuffle(applicationData.grid), numberToHide), function (gridSquare) {
+    gridSquare.isStatic = false;
+  });
+};
+
+var setAllGridSquaresPassive = function setAllGridSquaresPassive() {
+  _.each(applicationData.grid, function (gridSquare) {
+    gridSquare.state = gridSquareStates.PASSIVE;
+  });
+};
+
+var gridSquareSelected = function gridSquareSelected(gridSquare) {
+  applicationData.selectedGridSquare = gridSquare;
+  setAllGridSquaresPassive();
+  if (gridSquare) {
+    hightlightRelationships(gridSquare);
+  }
 };
 
 var hightlightRelationships = function hightlightRelationships(gridSquare) {
-  gridSquare.color = styleRules.colors.yellow;
+  gridSquare.state = gridSquareStates.ACTIVE;
   _.each(gridSquare.relationships, function (relatedGridSquare) {
-    relatedGridSquare.color = styleRules.colors.orange;
+    relatedGridSquare.state = gridSquareStates.RELATED_TO_ACTIVE;
   });
 };
 
-var gridSquareHover = function gridSquareHover(gridSquare) {
-  hightlightRelationships(gridSquare);
+var findGridSquareById = function findGridSquareById(id) {
+  return _.find(applicationData.grid, function (gridSquare) {
+    return gridSquare.id === id;
+  });
 };
 
-var gridSquareExit = function gridSquareExit(gridSquare) {
-  resetAllGridSquareColors();
+var moveSelectionLeft = function moveSelectionLeft() {
+  gridSquareSelected(applicationData.selectedGridSquare.leftNeighbor);
+};
+
+var moveSelectionUp = function moveSelectionUp() {
+  gridSquareSelected(applicationData.selectedGridSquare.upperNeighbor);
+};
+
+var moveSelectionRight = function moveSelectionRight() {
+  gridSquareSelected(applicationData.selectedGridSquare.rightNeighbor);
+};
+
+var moveSelectionDown = function moveSelectionDown() {
+  gridSquareSelected(applicationData.selectedGridSquare.lowerNeighbor);
+};
+
+var unselectGridSquare = function unselectGridSquare() {
+  gridSquareSelected(null);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42439,16 +42653,85 @@ var applicationStore = assign({}, EventEmitter.prototype, {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 dispatcher.register(function (action) {
-  //console.log(action.actionType);
+  console.log(action.actionType);
   switch (action.actionType) {
     case actionTypes.INITIALIZE_APPLICATION:
       initialize();
       break;
-    case actionTypes.GRID_SQUARE_MOUSE_ENTERED:
-      gridSquareHover(action.gridSquare);
+    case actionTypes.GRID_SQUARE_SELECTED:
+      gridSquareSelected(action.gridSquare);
       break;
-    case actionTypes.GRID_SQUARE_MOUSE_LEFT:
-      gridSquareExit(action.gridSquare);
+    case actionTypes.LEFT_ARROW_KEY_PRESSED:
+      moveSelectionLeft();
+      break;
+    case actionTypes.UP_ARROW_KEY_PRESSED:
+      moveSelectionUp();
+      break;
+    case actionTypes.RIGHT_ARROW_KEY_PRESSED:
+      moveSelectionRight();
+      break;
+    case actionTypes.DOWN_ARROW_KEY_PRESSED:
+      moveSelectionDown();
+      break;
+    case actionTypes.ESC_KEY_PRESSED:
+      unselectGridSquare();
+      break;
+    case actionTypes.SPACE_KEY_PRESSED:
+
+      break;
+    case actionTypes.SHIFT_ONE_KEY_PRESSED:
+
+      break;
+    case actionTypes.ONE_KEY_PRESSED:
+
+      break;
+    case actionTypes.SHIFT_TWO_KEY_PRESSED:
+
+      break;
+    case actionTypes.TWO_KEY_PRESSED:
+
+      break;
+    case actionTypes.SHIFT_THREE_KEY_PRESSED:
+
+      break;
+    case actionTypes.THREE_KEY_PRESSED:
+
+      break;
+    case actionTypes.SHIFT_FOUR_KEY_PRESSED:
+
+      break;
+    case actionTypes.FOUR_KEY_PRESSED:
+
+      break;
+    case actionTypes.SHIFT_FIVE_KEY_PRESSED:
+
+      break;
+    case actionTypes.FIVE_KEY_PRESSED:
+
+      break;
+    case actionTypes.SHIFT_SIX_KEY_PRESSED:
+
+      break;
+    case actionTypes.SIX_KEY_PRESSED:
+
+      break;
+    case actionTypes.SHIFT_SEVEN_KEY_PRESSED:
+
+      break;
+    case actionTypes.SEVEN_KEY_PRESSED:
+
+      break;
+    case actionTypes.SHIFT_EIGHT_KEY_PRESSED:
+
+      break;
+    case actionTypes.EIGHT_KEY_PRESSED:
+
+      break;
+    case actionTypes.SHIFT_NINE_KEY_PRESSED:
+
+      break;
+    case actionTypes.NINE_KEY_PRESSED:
+
       break;
   }
   applicationStore.emitChange();
@@ -42458,4 +42741,4 @@ dispatcher.register(function (action) {
 
 module.exports = applicationStore;
 
-},{"../flux/constants":168,"../flux/dispatcher":169,"../services/Sudoku.js":171,"events":1,"lodash":8,"object-assign":9}]},{},[170]);
+},{"../flux/constants":169,"../flux/dispatcher":170,"../services/Sudoku":172,"events":1,"lodash":8,"object-assign":9}]},{},[171]);
