@@ -334,7 +334,9 @@ function drainQueue() {
         currentQueue = queue;
         queue = [];
         while (++queueIndex < len) {
-            currentQueue[queueIndex].run();
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
         }
         queueIndex = -1;
         len = queue.length;
@@ -386,7 +388,6 @@ process.binding = function (name) {
     throw new Error('process.binding is not supported');
 };
 
-// TODO(shtylman)
 process.cwd = function () { return '/' };
 process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
@@ -42234,24 +42235,11 @@ var Application = React.createClass({ displayName: "Application",
   updateState: function updateState() {
     this.setState(applicationStore.getData());
   },
-  composeStyles: function composeStyles() {
-    return {
-      width: '450px',
-      margin: '100px auto',
-      borderLeft: 'solid 1px #CCCCCC',
-      borderBottom: 'solid 1px #CCCCCC'
-    };
-  },
-  clearStyle: function clearStyle() {
-    return {
-      clear: 'both'
-    };
-  },
   render: function render() {
     //console.log(this.state);
-    return React.createElement("div", { style: this.composeStyles() }, this.state.grid.map(function (gridSquare, index) {
+    return React.createElement("div", { className: "application-component" }, this.state.grid.map(function (gridSquare, index) {
       return React.createElement(GridSquare, { key: index, squareData: gridSquare });
-    }), React.createElement("div", { style: this.clearStyle() }));
+    }), React.createElement("div", { className: "clear" }));
   }
 });
 
@@ -42295,53 +42283,25 @@ var GridSquare = React.createClass({ displayName: "GridSquare",
   propTypes: {
     squareData: React.PropTypes.object.isRequired
   },
-  composeStyles: function composeStyles() {
-    var styles = {
-      float: 'left',
-      fontWeight: 'bold',
-      padding: '10px',
-      fontSize: '24px',
-      width: '50px',
-      height: '50px',
-      textAlign: 'center',
-      boxSizing: 'border-box',
-      fontFamily: 'verdana',
-      cursor: 'pointer',
-
-      userSelect: 'none',
-      WebkitUserSelect: 'none',
-      MozUserSelect: 'none',
-      msUserSelect: 'none'
-    };
+  convertStateToClassName: function convertStateToClassName(state) {
+    return state.split('_').join('-').toLowerCase();
+  },
+  composeClass: function composeClass() {
     var id = this.props.squareData.id;
-    if (id >= 27 && id <= 35 || id >= 54 && id <= 62) {
-      styles.borderTop = 'solid 5px #CCCCCC';
-    } else {
-      styles.borderTop = 'solid 1px #CCCCCC';
-    }
-    if ((id + 1) % 3 === 0 && (id + 1) % 9 !== 0) {
-      styles.borderRight = 'solid 5px #CCCCCC';
-    } else {
-      styles.borderRight = 'solid 1px #CCCCCC';
-    }
-    switch (this.props.squareData.state) {
-      case gridSquareStates.PASSIVE:
-        styles.backgroundColor = '#E9E9E9';
-        break;
-      case gridSquareStates.ACTIVE:
-        styles.backgroundColor = '#FFFFCC';
-        break;
-      case gridSquareStates.RELATED_TO_ACTIVE:
-        styles.backgroundColor = '#C1D7DE';
-        break;
-    }
+    var className = 'grid-square ' + this.convertStateToClassName(this.props.squareData.state);
     if (!this.props.squareData.isStatic) {
-      styles.color = '#0000FF';
+      className += ' is-user-input';
     }
     if (this.props.squareData.isConflicted) {
-      styles.textShadow = '3px -3px 30px rgba(255, 0, 0, 1), 3px 3px 30px rgba(255, 0, 0, 1), -3px 3px 30px rgba(255, 0, 0, 1), -3px -3px 30px rgba(255, 0, 0, 1)';
+      className += ' is-conflicted';
     }
-    return styles;
+    if (id >= 27 && id <= 35 || id >= 54 && id <= 62) {
+      className += ' top-border';
+    }
+    if ((id + 1) % 3 === 0 && (id + 1) % 9 !== 0) {
+      className += ' right-border';
+    }
+    return className;
   },
   gridSquareSelected: function gridSquareSelected() {
     applicationActions.gridSquareSelected(this.props.squareData);
@@ -42358,7 +42318,7 @@ var GridSquare = React.createClass({ displayName: "GridSquare",
     }
   },
   render: function render() {
-    return React.createElement("div", { style: this.composeStyles(), onClick: this.gridSquareSelected }, this.content());
+    return React.createElement("div", { className: this.composeClass(), onClick: this.gridSquareSelected }, this.content());
   }
 });
 

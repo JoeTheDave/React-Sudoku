@@ -1,0 +1,89 @@
+
+// Mixins SCSS ////////////////////////////////////////////////////////////////////////////////////
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  -ms-border-radius: $radius;
+  border-radius: $radius;
+}
+
+@mixin box-shodow($horizonalOffset, $verticalOffset, $blur, $spread, $color) {
+  -webkit-box-shadow: $horizonalOffset $verticalOffset $blur $spread $color;
+  -moz-box-shadow: $horizonalOffset $verticalOffset $blur $spread $color;
+  box-shadow: $horizonalOffset $verticalOffset $blur $spread $color;
+}
+
+@mixin text-glow($offset, $blur, $color) {
+	text-shadow: $offset -$offset $blur $color, $offset $offset $blur $color, -$offset $offset $blur $color, -$offset -$offset $blur $color;
+	//text-shadow: 3px -3px 3px rgba(255, 0, 0, 0.5), 3px 3px 3px rgba(255, 0, 0, 0.5), -3px 3px 3px rgba(255, 0, 0, 0.5), -3px -3px 3px rgba(255, 0, 0, 0.5);
+}
+
+
+@mixin no-user-select() {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+// Global /////////////////////////////////////////////////////////////////////////////////////////
+
+.clear {
+	clear: both;
+}
+
+// application-component //////////////////////////////////////////////////////////////////////////
+
+.application-component {
+	width: 450px;
+  margin: 100px auto;
+  border-left: solid 1px #CCCCCC;
+  border-bottom: solid 1px #CCCCCC;
+}
+
+// grid-square ////////////////////////////////////////////////////////////////////////////////////
+
+.grid-square {
+	float: left;
+  font-weight: bold;
+  padding: 10px;
+  font-size: 24px;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  box-sizing: border-box;
+  font-family: verdana;
+  cursor: pointer;
+  border-top: solid 1px #CCCCCC;
+  border-right: solid 1px #CCCCCC;
+  @include no-user-select();
+}
+
+.top-border {
+	border-top: solid 5px #CCCCCC;
+}
+
+.right-border {
+	border-right: solid 5px #CCCCCC;
+}
+
+.passive {
+  background-color: #E9E9E9;
+}
+
+.active {
+  background-color: #FFFFCC;
+}
+
+.related-to-active {
+  background-color: #C1D7DE;
+}
+
+.is-user-input {
+	color: #0000FF;
+}
+
+.is-conflicted {
+	@include text-glow(0px, 3px, rgba(255, 0, 0, 0.5));
+}
