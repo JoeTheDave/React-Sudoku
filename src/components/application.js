@@ -35,9 +35,9 @@ var Application = React.createClass({
     //console.log(this.state);
     return (
       <div style={this.composeStyles()}>
-        {this.state.grid.map(function(gridCell, index) {
+        {this.state.grid.map(function(gridSquare, index) {
           return (
-            <GridSquare key={index} squareData={gridCell} />
+            <GridSquare key={index} squareData={gridSquare} />
           );
         })}
         <div style={this.clearStyle()}></div>

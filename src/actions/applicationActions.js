@@ -13,7 +13,7 @@ module.exports = {
 
 	gridSquareSelected: function(gridSquare) {
     dispatcher.dispatch({
-      actionType: actionTypes.GRID_SQUARE_SELECTED,
+      actionType: actionTypes.SELECT_GRID_SQUARE,
       gridSquare: gridSquare
     });
 	}

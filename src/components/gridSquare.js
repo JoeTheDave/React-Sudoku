@@ -3,6 +3,7 @@
 var React = require('react');
 var applicationActions = require('../actions/applicationActions');
 var gridSquareStates = require('../flux/constants').gridSquareStates;
+var ClueMarks = require('./clueMarks');
 
 var GridSquare = React.createClass({
   propTypes: {
@@ -48,6 +49,12 @@ var GridSquare = React.createClass({
         styles.backgroundColor = '#C1D7DE';
         break;
     }
+    if (!this.props.squareData.isStatic) {
+      styles.color = '#0000FF';
+    }
+    if (this.props.squareData.isConflicted) {
+      styles.textShadow = '3px -3px 30px rgba(255, 0, 0, 1), 3px 3px 30px rgba(255, 0, 0, 1), -3px 3px 30px rgba(255, 0, 0, 1), -3px -3px 30px rgba(255, 0, 0, 1)';
+    }
     return styles;
   },
   gridSquareSelected: function () {
@@ -57,7 +64,11 @@ var GridSquare = React.createClass({
     if (this.props.squareData.isStatic) {
       return this.props.squareData.number;
     } else {
-      return '';
+      if (this.props.squareData.userInput) {
+        return this.props.squareData.userInput;
+      } else {
+        return (<ClueMarks marks={this.props.squareData.clueMarks} />);
+      }
     }
   },
   render: function () {

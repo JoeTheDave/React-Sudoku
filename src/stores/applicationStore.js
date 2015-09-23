@@ -22,13 +22,16 @@ var initialize = function () {
   applicationData.grid = sudokuService.generatePuzzleData();
   addGridSquareProperties();
   hideNumbers(45);
+  //console.log(applicationData.grid);
 };
 
 var addGridSquareProperties = function() {
   _.each(applicationData.grid, function (gridSquare) {
     gridSquare.state = gridSquareStates.PASSIVE;
     gridSquare.isStatic = true;
-    gridSquare.candidate = null;
+    gridSquare.userInput = null;
+    gridSquare.isConflicted = false;
+    gridSquare.clueMarks = [];
   });
 };
 
@@ -38,51 +41,95 @@ var hideNumbers = function (numberToHide) {
   });
 };
 
+var selectGridSquare = function (gridSquare) {
+  applicationData.selectedGridSquare = gridSquare;
+  updateGridHighlights();
+};
+
+var updateGridHighlights = function () {
+  setAllGridSquaresPassive();
+  highlightRelationships(applicationData.selectedGridSquare);
+  highlightConflicts();
+  highlightActiveGridSquare(applicationData.selectedGridSquare);
+};
+
 var setAllGridSquaresPassive = function () {
   _.each(applicationData.grid, function (gridSquare) {
     gridSquare.state = gridSquareStates.PASSIVE;
   });
 };
 
-var gridSquareSelected = function (gridSquare) {
-  applicationData.selectedGridSquare = gridSquare;
-  setAllGridSquaresPassive();
+var highlightRelationships = function (gridSquare) {
   if (gridSquare) {
-    hightlightRelationships(gridSquare);
+    _.each(gridSquare.relationships, function (relatedGridSquare) {
+      relatedGridSquare.state = gridSquareStates.RELATED_TO_ACTIVE;
+    });
   }
 };
 
-var hightlightRelationships = function (gridSquare) {
-  gridSquare.state = gridSquareStates.ACTIVE;
-  _.each(gridSquare.relationships, function (relatedGridSquare) {
-    relatedGridSquare.state = gridSquareStates.RELATED_TO_ACTIVE;
+var highlightConflicts = function () {
+  removeConflictsFromAllGridSquares();
+  _.each(applicationData.grid, function (gridSquare) {
+    _.each(gridSquare.relationships, function (relatedGridSquare) {
+      var gridSquareIsInConflictWithRelatedGridSquare = gridSquare.userInput === relatedGridSquare.number || gridSquare.userInput === relatedGridSquare.userInput;
+      var relatedGridSquareIsNotBlank = relatedGridSquare.isStatic || relatedGridSquare.userInput !== null;
+      if (gridSquare.userInput !== null && gridSquareIsInConflictWithRelatedGridSquare && relatedGridSquareIsNotBlank) {
+        gridSquare.isConflicted = true;
+        relatedGridSquare.isConflicted = true;
+      }
+    });
   });
 };
 
-var findGridSquareById = function (id) {
-  return _.find(applicationData.grid, function (gridSquare) {
-    return gridSquare.id === id;
+var removeConflictsFromAllGridSquares = function () {
+  _.each(applicationData.grid, function (gridSquare) {
+    gridSquare.isConflicted = false;
   });
+};
+
+
+var highlightActiveGridSquare = function (gridSquare) {
+  if (gridSquare) {
+    gridSquare.state = gridSquareStates.ACTIVE;
+  }
 };
 
 var moveSelectionLeft = function () {
-  gridSquareSelected(applicationData.selectedGridSquare.leftNeighbor);
+  selectGridSquare(applicationData.selectedGridSquare.leftNeighbor);
 };
 
 var moveSelectionUp = function () {
-  gridSquareSelected(applicationData.selectedGridSquare.upperNeighbor);
+  selectGridSquare(applicationData.selectedGridSquare.upperNeighbor);
 };
 
 var moveSelectionRight = function () {
-  gridSquareSelected(applicationData.selectedGridSquare.rightNeighbor);
+  selectGridSquare(applicationData.selectedGridSquare.rightNeighbor);
 };
 
 var moveSelectionDown = function () {
-  gridSquareSelected(applicationData.selectedGridSquare.lowerNeighbor);
+  selectGridSquare(applicationData.selectedGridSquare.lowerNeighbor);
 };
 
 var unselectGridSquare = function () {
-  gridSquareSelected(null);
+  selectGridSquare(null);
+};
+
+var assignNumberToSelectedGridSquare = function (number) {
+  applicationData.selectedGridSquare.userInput = number;
+  updateGridHighlights();
+};
+
+var assignClueMarkToSelectedGridSquare = function (number) {
+  if (_.contains(applicationData.selectedGridSquare.clueMarks, number)) {
+    applicationData.selectedGridSquare.clueMarks = _.difference(applicationData.selectedGridSquare.clueMarks, [number]);
+  } else {
+    applicationData.selectedGridSquare.clueMarks.push(number);
+  }
+};
+
+var clearGridSquare = function () {
+  applicationData.selectedGridSquare.userInput = null;
+  updateGridHighlights();
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,86 +154,57 @@ var applicationStore = assign({}, EventEmitter.prototype, {
 dispatcher.register(function (action) {
   console.log(action.actionType);
   switch (action.actionType) {
+
     case actionTypes.INITIALIZE_APPLICATION:
       initialize();
+      applicationStore.emitChange();
       break;
-    case actionTypes.GRID_SQUARE_SELECTED:
-      gridSquareSelected(action.gridSquare);
+
+    case actionTypes.SELECT_GRID_SQUARE:
+      selectGridSquare(action.gridSquare);
+      applicationStore.emitChange();
       break;
-    case actionTypes.LEFT_ARROW_KEY_PRESSED:
+
+    case actionTypes.MOVE_SELECTION_LEFT:
       moveSelectionLeft();
+      applicationStore.emitChange();
       break;
-    case actionTypes.UP_ARROW_KEY_PRESSED:
+
+    case actionTypes.MOVE_SELECTION_UP:
       moveSelectionUp();
+      applicationStore.emitChange();
       break;
-    case actionTypes.RIGHT_ARROW_KEY_PRESSED:
+
+    case actionTypes.MOVE_SELECTION_RIGHT:
       moveSelectionRight();
+      applicationStore.emitChange();
       break;
-    case actionTypes.DOWN_ARROW_KEY_PRESSED:
+
+    case actionTypes.MOVE_SELECTION_DOWN:
       moveSelectionDown();
+      applicationStore.emitChange();
       break;
-    case actionTypes.ESC_KEY_PRESSED:
+
+    case actionTypes.CLEAR_SELECTION:
       unselectGridSquare();
+      applicationStore.emitChange();
       break;
-    case actionTypes.SPACE_KEY_PRESSED:
 
+    case actionTypes.CLEAR_NUMBER:
+      clearGridSquare();
+      applicationStore.emitChange();
       break;
-    case actionTypes.SHIFT_ONE_KEY_PRESSED:
 
+    case actionTypes.INSERT_CLUE:
+      assignClueMarkToSelectedGridSquare(action.number);
+      applicationStore.emitChange();
       break;
-    case actionTypes.ONE_KEY_PRESSED:
 
-      break;
-    case actionTypes.SHIFT_TWO_KEY_PRESSED:
-
-      break;
-    case actionTypes.TWO_KEY_PRESSED:
-
-      break;
-    case actionTypes.SHIFT_THREE_KEY_PRESSED:
-
-      break;
-    case actionTypes.THREE_KEY_PRESSED:
-
-      break;
-    case actionTypes.SHIFT_FOUR_KEY_PRESSED:
-
-      break;
-    case actionTypes.FOUR_KEY_PRESSED:
-
-      break;
-    case actionTypes.SHIFT_FIVE_KEY_PRESSED:
-
-      break;
-    case actionTypes.FIVE_KEY_PRESSED:
-
-      break;
-    case actionTypes.SHIFT_SIX_KEY_PRESSED:
-
-      break;
-    case actionTypes.SIX_KEY_PRESSED:
-
-      break;
-    case actionTypes.SHIFT_SEVEN_KEY_PRESSED:
-
-      break;
-    case actionTypes.SEVEN_KEY_PRESSED:
-
-      break;
-    case actionTypes.SHIFT_EIGHT_KEY_PRESSED:
-
-      break;
-    case actionTypes.EIGHT_KEY_PRESSED:
-
-      break;
-    case actionTypes.SHIFT_NINE_KEY_PRESSED:
-
-      break;
-    case actionTypes.NINE_KEY_PRESSED:
-
+    case actionTypes.INSERT_NUMBER:
+      assignNumberToSelectedGridSquare(action.number);
+      applicationStore.emitChange();
       break;
   }
-  applicationStore.emitChange();
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

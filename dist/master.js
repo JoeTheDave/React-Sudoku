@@ -42088,14 +42088,14 @@ module.exports = {
 
   gridSquareSelected: function gridSquareSelected(gridSquare) {
     dispatcher.dispatch({
-      actionType: actionTypes.GRID_SQUARE_SELECTED,
+      actionType: actionTypes.SELECT_GRID_SQUARE,
       gridSquare: gridSquare
     });
   }
 
 };
 
-},{"../flux/constants":169,"../flux/dispatcher":170}],166:[function(require,module,exports){
+},{"../flux/constants":170,"../flux/dispatcher":171}],166:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -42108,84 +42108,99 @@ module.exports = {
 										global.onkeydown = function (event) {
 															switch (event.keyCode) {
 																				case 37:
-																									dispatcher.dispatch({ actionType: actionTypes.LEFT_ARROW_KEY_PRESSED });
+																									//left
+																									dispatcher.dispatch({ actionType: actionTypes.MOVE_SELECTION_LEFT });
 																									break;
 																				case 38:
-																									dispatcher.dispatch({ actionType: actionTypes.UP_ARROW_KEY_PRESSED });
+																									//up
+																									dispatcher.dispatch({ actionType: actionTypes.MOVE_SELECTION_UP });
 																									break;
 																				case 39:
-																									dispatcher.dispatch({ actionType: actionTypes.RIGHT_ARROW_KEY_PRESSED });
+																									//right
+																									dispatcher.dispatch({ actionType: actionTypes.MOVE_SELECTION_RIGHT });
 																									break;
 																				case 40:
-																									dispatcher.dispatch({ actionType: actionTypes.DOWN_ARROW_KEY_PRESSED });
+																									//down
+																									dispatcher.dispatch({ actionType: actionTypes.MOVE_SELECTION_DOWN });
 																									break;
 																				case 27:
-																									dispatcher.dispatch({ actionType: actionTypes.ESC_KEY_PRESSED });
+																									//esc
+																									dispatcher.dispatch({ actionType: actionTypes.CLEAR_SELECTION });
 																									break;
 																				case 32:
-																									dispatcher.dispatch({ actionType: actionTypes.SPACE_KEY_PRESSED });
+																									//space
+																									dispatcher.dispatch({ actionType: actionTypes.CLEAR_NUMBER });
 																									break;
 																				case 49:
+																									//1
 																									if (event.shiftKey) {
-																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_ONE_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 1 });
 																									} else {
-																														dispatcher.dispatch({ actionType: actionTypes.ONE_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 1 });
 																									}
 																									break;
 																				case 50:
+																									//2
 																									if (event.shiftKey) {
-																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_TWO_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 2 });
 																									} else {
-																														dispatcher.dispatch({ actionType: actionTypes.TWO_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 2 });
 																									}
 																									break;
 																				case 51:
+																									//3
 																									if (event.shiftKey) {
-																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_THREE_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 3 });
 																									} else {
-																														dispatcher.dispatch({ actionType: actionTypes.THREE_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 3 });
 																									}
 																									break;
 																				case 52:
+																									//4
 																									if (event.shiftKey) {
-																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_FOUR_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 4 });
 																									} else {
-																														dispatcher.dispatch({ actionType: actionTypes.FOUR_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 4 });
 																									}
 																									break;
 																				case 53:
+																									//5
 																									if (event.shiftKey) {
-																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_FIVE_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 5 });
 																									} else {
-																														dispatcher.dispatch({ actionType: actionTypes.FIVE_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 5 });
 																									}
 																									break;
 																				case 54:
+																									//6
 																									if (event.shiftKey) {
-																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_SIX_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 6 });
 																									} else {
-																														dispatcher.dispatch({ actionType: actionTypes.SIX_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 6 });
 																									}
 																									break;
 																				case 55:
+																									//7
 																									if (event.shiftKey) {
-																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_SEVEN_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 7 });
 																									} else {
-																														dispatcher.dispatch({ actionType: actionTypes.SEVEN_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 7 });
 																									}
 																									break;
 																				case 56:
+																									//8
 																									if (event.shiftKey) {
-																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_EIGHT_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 8 });
 																									} else {
-																														dispatcher.dispatch({ actionType: actionTypes.EIGHT_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 8 });
 																									}
 																									break;
 																				case 57:
+																									//9
 																									if (event.shiftKey) {
-																														dispatcher.dispatch({ actionType: actionTypes.SHIFT_NINE_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 9 });
 																									} else {
-																														dispatcher.dispatch({ actionType: actionTypes.NINE_KEY_PRESSED });
+																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 9 });
 																									}
 																									break;
 																				default:
@@ -42198,7 +42213,7 @@ module.exports = {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../flux/constants":169,"../flux/dispatcher":170}],167:[function(require,module,exports){
+},{"../flux/constants":170,"../flux/dispatcher":171}],167:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -42234,20 +42249,47 @@ var Application = React.createClass({ displayName: "Application",
   },
   render: function render() {
     //console.log(this.state);
-    return React.createElement("div", { style: this.composeStyles() }, this.state.grid.map(function (gridCell, index) {
-      return React.createElement(GridSquare, { key: index, squareData: gridCell });
+    return React.createElement("div", { style: this.composeStyles() }, this.state.grid.map(function (gridSquare, index) {
+      return React.createElement(GridSquare, { key: index, squareData: gridSquare });
     }), React.createElement("div", { style: this.clearStyle() }));
   }
 });
 
 module.exports = Application;
 
-},{"../actions/applicationActions":165,"../actions/globalActions":166,"../stores/applicationStore":173,"./gridSquare":168,"react":164}],168:[function(require,module,exports){
+},{"../actions/applicationActions":165,"../actions/globalActions":166,"../stores/applicationStore":174,"./gridSquare":169,"react":164}],168:[function(require,module,exports){
+'use strict';
+
+var React = require('react');
+var _ = require('lodash');
+
+var ClueMarks = React.createClass({ displayName: "ClueMarks",
+  propTypes: {
+    marks: React.PropTypes.array.isRequired
+  },
+  markOptions: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  clueMarkStyles: {
+    float: 'left',
+    fontSize: '8px'
+  },
+  render: function render() {
+    var self = this;
+    return React.createElement("div", null, this.markOptions.map(function (mark, index) {
+      console.log();
+      return React.createElement("div", { key: index, styles: self.clueMarkStyles }, mark);
+    }));
+  }
+});
+
+module.exports = ClueMarks;
+
+},{"lodash":8,"react":164}],169:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
 var applicationActions = require('../actions/applicationActions');
 var gridSquareStates = require('../flux/constants').gridSquareStates;
+var ClueMarks = require('./clueMarks');
 
 var GridSquare = React.createClass({ displayName: "GridSquare",
   propTypes: {
@@ -42293,6 +42335,12 @@ var GridSquare = React.createClass({ displayName: "GridSquare",
         styles.backgroundColor = '#C1D7DE';
         break;
     }
+    if (!this.props.squareData.isStatic) {
+      styles.color = '#0000FF';
+    }
+    if (this.props.squareData.isConflicted) {
+      styles.textShadow = '3px -3px 30px rgba(255, 0, 0, 1), 3px 3px 30px rgba(255, 0, 0, 1), -3px 3px 30px rgba(255, 0, 0, 1), -3px -3px 30px rgba(255, 0, 0, 1)';
+    }
     return styles;
   },
   gridSquareSelected: function gridSquareSelected() {
@@ -42302,7 +42350,11 @@ var GridSquare = React.createClass({ displayName: "GridSquare",
     if (this.props.squareData.isStatic) {
       return this.props.squareData.number;
     } else {
-      return '';
+      if (this.props.squareData.userInput) {
+        return this.props.squareData.userInput;
+      } else {
+        return React.createElement(ClueMarks, { marks: this.props.squareData.clueMarks });
+      }
     }
   },
   render: function render() {
@@ -42312,7 +42364,7 @@ var GridSquare = React.createClass({ displayName: "GridSquare",
 
 module.exports = GridSquare;
 
-},{"../actions/applicationActions":165,"../flux/constants":169,"react":164}],169:[function(require,module,exports){
+},{"../actions/applicationActions":165,"../flux/constants":170,"./clueMarks":168,"react":164}],170:[function(require,module,exports){
 'use strict';
 
 var keymirror = require('keymirror');
@@ -42321,32 +42373,16 @@ module.exports = {
   actionTypes: keymirror({
     INITIALIZE_APPLICATION: null,
 
-    LEFT_ARROW_KEY_PRESSED: null,
-    UP_ARROW_KEY_PRESSED: null,
-    RIGHT_ARROW_KEY_PRESSED: null,
-    DOWN_ARROW_KEY_PRESSED: null,
-    ESC_KEY_PRESSED: null,
-    SPACE_KEY_PRESSED: null,
-    SHIFT_ONE_KEY_PRESSED: null,
-    ONE_KEY_PRESSED: null,
-    SHIFT_TWO_KEY_PRESSED: null,
-    TWO_KEY_PRESSED: null,
-    SHIFT_THREE_KEY_PRESSED: null,
-    THREE_KEY_PRESSED: null,
-    SHIFT_FOUR_KEY_PRESSED: null,
-    FOUR_KEY_PRESSED: null,
-    SHIFT_FIVE_KEY_PRESSED: null,
-    FIVE_KEY_PRESSED: null,
-    SHIFT_SIX_KEY_PRESSED: null,
-    SIX_KEY_PRESSED: null,
-    SHIFT_SEVEN_KEY_PRESSED: null,
-    SEVEN_KEY_PRESSED: null,
-    SHIFT_EIGHT_KEY_PRESSED: null,
-    EIGHT_KEY_PRESSED: null,
-    SHIFT_NINE_KEY_PRESSED: null,
-    NINE_KEY_PRESSED: null,
+    MOVE_SELECTION_LEFT: null,
+    MOVE_SELECTION_UP: null,
+    MOVE_SELECTION_RIGHT: null,
+    MOVE_SELECTION_DOWN: null,
+    CLEAR_SELECTION: null,
+    CLEAR_NUMBER: null,
+    INSERT_NUMBER: null,
+    INSERT_CLUE: null,
 
-    GRID_SQUARE_SELECTED: null
+    SELECT_GRID_SQUARE: null
   }),
   changeEvent: 'change',
   gridSquareStates: keymirror({
@@ -42356,14 +42392,14 @@ module.exports = {
   })
 };
 
-},{"keymirror":7}],170:[function(require,module,exports){
+},{"keymirror":7}],171:[function(require,module,exports){
 'use strict';
 
 var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":3}],171:[function(require,module,exports){
+},{"flux":3}],172:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -42371,7 +42407,7 @@ var $ = require('jquery');
 var Application = require('./components/application');
 React.render(React.createElement(Application, null), $('#content')[0]);
 
-},{"./components/application":167,"jquery":6,"react":164}],172:[function(require,module,exports){
+},{"./components/application":167,"jquery":6,"react":164}],173:[function(require,module,exports){
 'use strict';
 
 var _ = require('lodash');
@@ -42545,7 +42581,7 @@ module.exports = {
   generatePuzzleData: generatePuzzleData
 };
 
-},{"lodash":8}],173:[function(require,module,exports){
+},{"lodash":8}],174:[function(require,module,exports){
 'use strict';
 
 var EventEmitter = require('events').EventEmitter;
@@ -42570,13 +42606,16 @@ var initialize = function initialize() {
   applicationData.grid = sudokuService.generatePuzzleData();
   addGridSquareProperties();
   hideNumbers(45);
+  //console.log(applicationData.grid);
 };
 
 var addGridSquareProperties = function addGridSquareProperties() {
   _.each(applicationData.grid, function (gridSquare) {
     gridSquare.state = gridSquareStates.PASSIVE;
     gridSquare.isStatic = true;
-    gridSquare.candidate = null;
+    gridSquare.userInput = null;
+    gridSquare.isConflicted = false;
+    gridSquare.clueMarks = [];
   });
 };
 
@@ -42586,51 +42625,94 @@ var hideNumbers = function hideNumbers(numberToHide) {
   });
 };
 
+var selectGridSquare = function selectGridSquare(gridSquare) {
+  applicationData.selectedGridSquare = gridSquare;
+  updateGridHighlights();
+};
+
+var updateGridHighlights = function updateGridHighlights() {
+  setAllGridSquaresPassive();
+  highlightRelationships(applicationData.selectedGridSquare);
+  highlightConflicts();
+  highlightActiveGridSquare(applicationData.selectedGridSquare);
+};
+
 var setAllGridSquaresPassive = function setAllGridSquaresPassive() {
   _.each(applicationData.grid, function (gridSquare) {
     gridSquare.state = gridSquareStates.PASSIVE;
   });
 };
 
-var gridSquareSelected = function gridSquareSelected(gridSquare) {
-  applicationData.selectedGridSquare = gridSquare;
-  setAllGridSquaresPassive();
+var highlightRelationships = function highlightRelationships(gridSquare) {
   if (gridSquare) {
-    hightlightRelationships(gridSquare);
+    _.each(gridSquare.relationships, function (relatedGridSquare) {
+      relatedGridSquare.state = gridSquareStates.RELATED_TO_ACTIVE;
+    });
   }
 };
 
-var hightlightRelationships = function hightlightRelationships(gridSquare) {
-  gridSquare.state = gridSquareStates.ACTIVE;
-  _.each(gridSquare.relationships, function (relatedGridSquare) {
-    relatedGridSquare.state = gridSquareStates.RELATED_TO_ACTIVE;
+var highlightConflicts = function highlightConflicts() {
+  removeConflictsFromAllGridSquares();
+  _.each(applicationData.grid, function (gridSquare) {
+    _.each(gridSquare.relationships, function (relatedGridSquare) {
+      var gridSquareIsInConflictWithRelatedGridSquare = gridSquare.userInput === relatedGridSquare.number || gridSquare.userInput === relatedGridSquare.userInput;
+      var relatedGridSquareIsNotBlank = relatedGridSquare.isStatic || relatedGridSquare.userInput !== null;
+      if (gridSquare.userInput !== null && gridSquareIsInConflictWithRelatedGridSquare && relatedGridSquareIsNotBlank) {
+        gridSquare.isConflicted = true;
+        relatedGridSquare.isConflicted = true;
+      }
+    });
   });
 };
 
-var findGridSquareById = function findGridSquareById(id) {
-  return _.find(applicationData.grid, function (gridSquare) {
-    return gridSquare.id === id;
+var removeConflictsFromAllGridSquares = function removeConflictsFromAllGridSquares() {
+  _.each(applicationData.grid, function (gridSquare) {
+    gridSquare.isConflicted = false;
   });
+};
+
+var highlightActiveGridSquare = function highlightActiveGridSquare(gridSquare) {
+  if (gridSquare) {
+    gridSquare.state = gridSquareStates.ACTIVE;
+  }
 };
 
 var moveSelectionLeft = function moveSelectionLeft() {
-  gridSquareSelected(applicationData.selectedGridSquare.leftNeighbor);
+  selectGridSquare(applicationData.selectedGridSquare.leftNeighbor);
 };
 
 var moveSelectionUp = function moveSelectionUp() {
-  gridSquareSelected(applicationData.selectedGridSquare.upperNeighbor);
+  selectGridSquare(applicationData.selectedGridSquare.upperNeighbor);
 };
 
 var moveSelectionRight = function moveSelectionRight() {
-  gridSquareSelected(applicationData.selectedGridSquare.rightNeighbor);
+  selectGridSquare(applicationData.selectedGridSquare.rightNeighbor);
 };
 
 var moveSelectionDown = function moveSelectionDown() {
-  gridSquareSelected(applicationData.selectedGridSquare.lowerNeighbor);
+  selectGridSquare(applicationData.selectedGridSquare.lowerNeighbor);
 };
 
 var unselectGridSquare = function unselectGridSquare() {
-  gridSquareSelected(null);
+  selectGridSquare(null);
+};
+
+var assignNumberToSelectedGridSquare = function assignNumberToSelectedGridSquare(number) {
+  applicationData.selectedGridSquare.userInput = number;
+  updateGridHighlights();
+};
+
+var assignClueMarkToSelectedGridSquare = function assignClueMarkToSelectedGridSquare(number) {
+  if (_.contains(applicationData.selectedGridSquare.clueMarks, number)) {
+    applicationData.selectedGridSquare.clueMarks = _.difference(applicationData.selectedGridSquare.clueMarks, [number]);
+  } else {
+    applicationData.selectedGridSquare.clueMarks.push(number);
+  }
+};
+
+var clearGridSquare = function clearGridSquare() {
+  applicationData.selectedGridSquare.userInput = null;
+  updateGridHighlights();
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42655,90 +42737,61 @@ var applicationStore = assign({}, EventEmitter.prototype, {
 dispatcher.register(function (action) {
   console.log(action.actionType);
   switch (action.actionType) {
+
     case actionTypes.INITIALIZE_APPLICATION:
       initialize();
+      applicationStore.emitChange();
       break;
-    case actionTypes.GRID_SQUARE_SELECTED:
-      gridSquareSelected(action.gridSquare);
+
+    case actionTypes.SELECT_GRID_SQUARE:
+      selectGridSquare(action.gridSquare);
+      applicationStore.emitChange();
       break;
-    case actionTypes.LEFT_ARROW_KEY_PRESSED:
+
+    case actionTypes.MOVE_SELECTION_LEFT:
       moveSelectionLeft();
+      applicationStore.emitChange();
       break;
-    case actionTypes.UP_ARROW_KEY_PRESSED:
+
+    case actionTypes.MOVE_SELECTION_UP:
       moveSelectionUp();
+      applicationStore.emitChange();
       break;
-    case actionTypes.RIGHT_ARROW_KEY_PRESSED:
+
+    case actionTypes.MOVE_SELECTION_RIGHT:
       moveSelectionRight();
+      applicationStore.emitChange();
       break;
-    case actionTypes.DOWN_ARROW_KEY_PRESSED:
+
+    case actionTypes.MOVE_SELECTION_DOWN:
       moveSelectionDown();
+      applicationStore.emitChange();
       break;
-    case actionTypes.ESC_KEY_PRESSED:
+
+    case actionTypes.CLEAR_SELECTION:
       unselectGridSquare();
+      applicationStore.emitChange();
       break;
-    case actionTypes.SPACE_KEY_PRESSED:
 
+    case actionTypes.CLEAR_NUMBER:
+      clearGridSquare();
+      applicationStore.emitChange();
       break;
-    case actionTypes.SHIFT_ONE_KEY_PRESSED:
 
+    case actionTypes.INSERT_CLUE:
+      assignClueMarkToSelectedGridSquare(action.number);
+      applicationStore.emitChange();
       break;
-    case actionTypes.ONE_KEY_PRESSED:
 
-      break;
-    case actionTypes.SHIFT_TWO_KEY_PRESSED:
-
-      break;
-    case actionTypes.TWO_KEY_PRESSED:
-
-      break;
-    case actionTypes.SHIFT_THREE_KEY_PRESSED:
-
-      break;
-    case actionTypes.THREE_KEY_PRESSED:
-
-      break;
-    case actionTypes.SHIFT_FOUR_KEY_PRESSED:
-
-      break;
-    case actionTypes.FOUR_KEY_PRESSED:
-
-      break;
-    case actionTypes.SHIFT_FIVE_KEY_PRESSED:
-
-      break;
-    case actionTypes.FIVE_KEY_PRESSED:
-
-      break;
-    case actionTypes.SHIFT_SIX_KEY_PRESSED:
-
-      break;
-    case actionTypes.SIX_KEY_PRESSED:
-
-      break;
-    case actionTypes.SHIFT_SEVEN_KEY_PRESSED:
-
-      break;
-    case actionTypes.SEVEN_KEY_PRESSED:
-
-      break;
-    case actionTypes.SHIFT_EIGHT_KEY_PRESSED:
-
-      break;
-    case actionTypes.EIGHT_KEY_PRESSED:
-
-      break;
-    case actionTypes.SHIFT_NINE_KEY_PRESSED:
-
-      break;
-    case actionTypes.NINE_KEY_PRESSED:
-
+    case actionTypes.INSERT_NUMBER:
+      assignNumberToSelectedGridSquare(action.number);
+      applicationStore.emitChange();
       break;
   }
-  applicationStore.emitChange();
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module.exports = applicationStore;
 
-},{"../flux/constants":169,"../flux/dispatcher":170,"../services/Sudoku":172,"events":1,"lodash":8,"object-assign":9}]},{},[171]);
+},{"../flux/constants":170,"../flux/dispatcher":171,"../services/Sudoku":173,"events":1,"lodash":8,"object-assign":9}]},{},[172]);
