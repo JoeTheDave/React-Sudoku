@@ -15,8 +15,8 @@
 }
 
 @mixin text-glow($offset, $blur, $color) {
-	text-shadow: $offset -$offset $blur $color, $offset $offset $blur $color, -$offset $offset $blur $color, -$offset -$offset $blur $color;
-	//text-shadow: 3px -3px 3px rgba(255, 0, 0, 0.5), 3px 3px 3px rgba(255, 0, 0, 0.5), -3px 3px 3px rgba(255, 0, 0, 0.5), -3px -3px 3px rgba(255, 0, 0, 0.5);
+	$negativeOffset: -$offset;
+	text-shadow: $offset $negativeOffset $blur $color, $offset $offset $blur $color, $negativeOffset $offset $blur $color, $negativeOffset $negativeOffset $blur $color;
 }
 
 
@@ -46,12 +46,8 @@
 
 .grid-square {
 	float: left;
-  font-weight: bold;
-  padding: 10px;
-  font-size: 24px;
   width: 50px;
   height: 50px;
-  text-align: center;
   box-sizing: border-box;
   font-family: verdana;
   cursor: pointer;
@@ -69,21 +65,31 @@
 }
 
 .passive {
-  background-color: #E9E9E9;
+  background-color: #EEEEEE;
 }
 
 .active {
-  background-color: #FFFFCC;
+  background-color: #BBBBBB;
 }
 
 .related-to-active {
-  background-color: #C1D7DE;
-}
-
-.is-user-input {
-	color: #0000FF;
+  background-color: #DDDDDD;
 }
 
 .is-conflicted {
-	@include text-glow(0px, 3px, rgba(255, 0, 0, 0.5));
+	@include text-glow(0px, 15px, rgba(255, 0, 0, 0.5));
+}
+
+// number /////////////////////////////////////////////////////////////////////////////////////////
+
+.number {
+  font-weight: bold;
+  padding: 10px;
+  font-size: 24px;
+  text-align: center;
+  color: #0000FF;
+}
+
+.is-static {
+	color: #000000;
 }

@@ -7,19 +7,14 @@ var ClueMarks = React.createClass({
   propTypes: {
     marks: React.PropTypes.array.isRequired
   },
-  markOptions: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-  clueMarkStyles: {
-    float: 'left',
-    fontSize: '8px'
-  },
+  markOptions: [],//[1, 2, 3, 4, 5, 6, 7, 8, 9],
   render: function () {
     var self = this;
     return (
       <div>
-        {this.markOptions.map(function(mark, index) {
-          console.log();
+        {this.props.marks.map(function(mark, index) {
           return (
-            <div key={index} styles={self.clueMarkStyles}>{mark}</div>
+            <div key={index}>{mark}</div>
           );
         })}
       </div>

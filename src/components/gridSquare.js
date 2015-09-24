@@ -3,6 +3,7 @@
 var React = require('react');
 var applicationActions = require('../actions/applicationActions');
 var gridSquareStates = require('../flux/constants').gridSquareStates;
+var Number = require('./number');
 var ClueMarks = require('./clueMarks');
 
 var GridSquare = React.createClass({
@@ -15,9 +16,6 @@ var GridSquare = React.createClass({
   composeClass: function () {
     var id = this.props.squareData.id;
     var className = 'grid-square ' + this.convertStateToClassName(this.props.squareData.state);
-    if (!this.props.squareData.isStatic) {
-      className += ' is-user-input';
-    }
     if (this.props.squareData.isConflicted) {
       className += ' is-conflicted';
     }
@@ -33,14 +31,10 @@ var GridSquare = React.createClass({
     applicationActions.gridSquareSelected(this.props.squareData);
   },
   content: function () {
-    if (this.props.squareData.isStatic) {
-      return this.props.squareData.number;
+    if (this.props.squareData.isStatic || this.props.squareData.userInput) {
+      return (<Number isStatic={this.props.squareData.isStatic} number={this.props.squareData.isStatic ? this.props.squareData.number : this.props.squareData.userInput} />);
     } else {
-      if (this.props.squareData.userInput) {
-        return this.props.squareData.userInput;
-      } else {
-        return (<ClueMarks marks={this.props.squareData.clueMarks} />);
-      }
+      return (<ClueMarks marks={this.props.squareData.clueMarks} />);
     }
   },
   render: function () {

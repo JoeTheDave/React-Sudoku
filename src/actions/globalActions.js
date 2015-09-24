@@ -27,6 +27,7 @@ module.exports = {
 	        dispatcher.dispatch({ actionType: actionTypes.CLEAR_NUMBER });
 	        break;
 	      case 49: //1
+	      case 97:
 	      	if (event.shiftKey) {
 	        	dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 1 });
 	      	} else {
@@ -34,6 +35,7 @@ module.exports = {
 	      	}
 	        break;
 	      case 50: //2
+	      case 98:
 	        if (event.shiftKey) {
       			dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 2 });
 	      	} else {
@@ -41,6 +43,7 @@ module.exports = {
 	      	}
 	        break;
 	      case 51: //3
+	      case 99:
 	        if (event.shiftKey) {
       			dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 3 });
 	      	} else {
@@ -48,6 +51,7 @@ module.exports = {
 	      	}
 	        break;
 	      case 52: //4
+	      case 100:
 	        if (event.shiftKey) {
       			dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 4 });
 	      	} else {
@@ -55,6 +59,7 @@ module.exports = {
 	      	}
 	        break;
 	      case 53: //5
+	      case 101:
 	        if (event.shiftKey) {
       			dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 5 });
 	      	} else {
@@ -62,6 +67,7 @@ module.exports = {
 	      	}
 	        break;
 	      case 54: //6
+	      case 102:
 	        if (event.shiftKey) {
       			dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 6 });
 	      	} else {
@@ -69,6 +75,7 @@ module.exports = {
 	      	}
 	        break;
 	      case 55: //7
+	      case 103:
 	        if (event.shiftKey) {
       			dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 7 });
 	      	} else {
@@ -76,6 +83,7 @@ module.exports = {
 	      	}
 	        break;
 	      case 56: //8
+	      case 104:
 	        if (event.shiftKey) {
       			dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 8 });
 	      	} else {
@@ -83,6 +91,7 @@ module.exports = {
 	      	}
 	        break;
 	      case 57: //9
+	      case 105:
 	        if (event.shiftKey) {
       			dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 9 });
 	      	} else {

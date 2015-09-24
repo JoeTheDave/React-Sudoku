@@ -42096,7 +42096,7 @@ module.exports = {
 
 };
 
-},{"../flux/constants":170,"../flux/dispatcher":171}],166:[function(require,module,exports){
+},{"../flux/constants":171,"../flux/dispatcher":172}],166:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -42132,72 +42132,72 @@ module.exports = {
 																									//space
 																									dispatcher.dispatch({ actionType: actionTypes.CLEAR_NUMBER });
 																									break;
-																				case 49:
-																									//1
+																				case 49: //1
+																				case 97:
 																									if (event.shiftKey) {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 1 });
 																									} else {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 1 });
 																									}
 																									break;
-																				case 50:
-																									//2
+																				case 50: //2
+																				case 98:
 																									if (event.shiftKey) {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 2 });
 																									} else {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 2 });
 																									}
 																									break;
-																				case 51:
-																									//3
+																				case 51: //3
+																				case 99:
 																									if (event.shiftKey) {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 3 });
 																									} else {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 3 });
 																									}
 																									break;
-																				case 52:
-																									//4
+																				case 52: //4
+																				case 100:
 																									if (event.shiftKey) {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 4 });
 																									} else {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 4 });
 																									}
 																									break;
-																				case 53:
-																									//5
+																				case 53: //5
+																				case 101:
 																									if (event.shiftKey) {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 5 });
 																									} else {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 5 });
 																									}
 																									break;
-																				case 54:
-																									//6
+																				case 54: //6
+																				case 102:
 																									if (event.shiftKey) {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 6 });
 																									} else {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 6 });
 																									}
 																									break;
-																				case 55:
-																									//7
+																				case 55: //7
+																				case 103:
 																									if (event.shiftKey) {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 7 });
 																									} else {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 7 });
 																									}
 																									break;
-																				case 56:
-																									//8
+																				case 56: //8
+																				case 104:
 																									if (event.shiftKey) {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 8 });
 																									} else {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 8 });
 																									}
 																									break;
-																				case 57:
-																									//9
+																				case 57: //9
+																				case 105:
 																									if (event.shiftKey) {
 																														dispatcher.dispatch({ actionType: actionTypes.INSERT_CLUE, number: 9 });
 																									} else {
@@ -42214,7 +42214,7 @@ module.exports = {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../flux/constants":170,"../flux/dispatcher":171}],167:[function(require,module,exports){
+},{"../flux/constants":171,"../flux/dispatcher":172}],167:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -42245,7 +42245,7 @@ var Application = React.createClass({ displayName: "Application",
 
 module.exports = Application;
 
-},{"../actions/applicationActions":165,"../actions/globalActions":166,"../stores/applicationStore":174,"./gridSquare":169,"react":164}],168:[function(require,module,exports){
+},{"../actions/applicationActions":165,"../actions/globalActions":166,"../stores/applicationStore":175,"./gridSquare":169,"react":164}],168:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -42255,16 +42255,11 @@ var ClueMarks = React.createClass({ displayName: "ClueMarks",
   propTypes: {
     marks: React.PropTypes.array.isRequired
   },
-  markOptions: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-  clueMarkStyles: {
-    float: 'left',
-    fontSize: '8px'
-  },
+  markOptions: [], //[1, 2, 3, 4, 5, 6, 7, 8, 9],
   render: function render() {
     var self = this;
-    return React.createElement("div", null, this.markOptions.map(function (mark, index) {
-      console.log();
-      return React.createElement("div", { key: index, styles: self.clueMarkStyles }, mark);
+    return React.createElement("div", null, this.props.marks.map(function (mark, index) {
+      return React.createElement("div", { key: index }, mark);
     }));
   }
 });
@@ -42277,6 +42272,7 @@ module.exports = ClueMarks;
 var React = require('react');
 var applicationActions = require('../actions/applicationActions');
 var gridSquareStates = require('../flux/constants').gridSquareStates;
+var Number = require('./number');
 var ClueMarks = require('./clueMarks');
 
 var GridSquare = React.createClass({ displayName: "GridSquare",
@@ -42289,9 +42285,6 @@ var GridSquare = React.createClass({ displayName: "GridSquare",
   composeClass: function composeClass() {
     var id = this.props.squareData.id;
     var className = 'grid-square ' + this.convertStateToClassName(this.props.squareData.state);
-    if (!this.props.squareData.isStatic) {
-      className += ' is-user-input';
-    }
     if (this.props.squareData.isConflicted) {
       className += ' is-conflicted';
     }
@@ -42307,14 +42300,10 @@ var GridSquare = React.createClass({ displayName: "GridSquare",
     applicationActions.gridSquareSelected(this.props.squareData);
   },
   content: function content() {
-    if (this.props.squareData.isStatic) {
-      return this.props.squareData.number;
+    if (this.props.squareData.isStatic || this.props.squareData.userInput) {
+      return React.createElement(Number, { isStatic: this.props.squareData.isStatic, number: this.props.squareData.isStatic ? this.props.squareData.number : this.props.squareData.userInput });
     } else {
-      if (this.props.squareData.userInput) {
-        return this.props.squareData.userInput;
-      } else {
-        return React.createElement(ClueMarks, { marks: this.props.squareData.clueMarks });
-      }
+      return React.createElement(ClueMarks, { marks: this.props.squareData.clueMarks });
     }
   },
   render: function render() {
@@ -42324,7 +42313,31 @@ var GridSquare = React.createClass({ displayName: "GridSquare",
 
 module.exports = GridSquare;
 
-},{"../actions/applicationActions":165,"../flux/constants":170,"./clueMarks":168,"react":164}],170:[function(require,module,exports){
+},{"../actions/applicationActions":165,"../flux/constants":171,"./clueMarks":168,"./number":170,"react":164}],170:[function(require,module,exports){
+'use strict';
+
+var React = require('react');
+
+var Number = React.createClass({ displayName: "Number",
+  propTypes: {
+    number: React.PropTypes.number.isRequired,
+    isStatic: React.PropTypes.bool.isRequired
+  },
+  composeClass: function composeClass() {
+    var className = 'number';
+    if (this.props.isStatic) {
+      className += ' is-static';
+    }
+    return className;
+  },
+  render: function render() {
+    return React.createElement("div", { className: this.composeClass() }, this.props.number);
+  }
+});
+
+module.exports = Number;
+
+},{"react":164}],171:[function(require,module,exports){
 'use strict';
 
 var keymirror = require('keymirror');
@@ -42352,14 +42365,14 @@ module.exports = {
   })
 };
 
-},{"keymirror":7}],171:[function(require,module,exports){
+},{"keymirror":7}],172:[function(require,module,exports){
 'use strict';
 
 var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":3}],172:[function(require,module,exports){
+},{"flux":3}],173:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -42367,7 +42380,7 @@ var $ = require('jquery');
 var Application = require('./components/application');
 React.render(React.createElement(Application, null), $('#content')[0]);
 
-},{"./components/application":167,"jquery":6,"react":164}],173:[function(require,module,exports){
+},{"./components/application":167,"jquery":6,"react":164}],174:[function(require,module,exports){
 'use strict';
 
 var _ = require('lodash');
@@ -42541,7 +42554,7 @@ module.exports = {
   generatePuzzleData: generatePuzzleData
 };
 
-},{"lodash":8}],174:[function(require,module,exports){
+},{"lodash":8}],175:[function(require,module,exports){
 'use strict';
 
 var EventEmitter = require('events').EventEmitter;
@@ -42754,4 +42767,4 @@ dispatcher.register(function (action) {
 
 module.exports = applicationStore;
 
-},{"../flux/constants":170,"../flux/dispatcher":171,"../services/Sudoku":173,"events":1,"lodash":8,"object-assign":9}]},{},[172]);
+},{"../flux/constants":171,"../flux/dispatcher":172,"../services/Sudoku":174,"events":1,"lodash":8,"object-assign":9}]},{},[173]);

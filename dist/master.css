@@ -9,12 +9,8 @@
 
 .grid-square {
   float: left;
-  font-weight: bold;
-  padding: 10px;
-  font-size: 24px;
   width: 50px;
   height: 50px;
-  text-align: center;
   box-sizing: border-box;
   font-family: verdana;
   cursor: pointer;
@@ -32,16 +28,23 @@
   border-right: solid 5px #CCCCCC; }
 
 .passive {
-  background-color: #E9E9E9; }
+  background-color: #EEEEEE; }
 
 .active {
-  background-color: #FFFFCC; }
+  background-color: #BBBBBB; }
 
 .related-to-active {
-  background-color: #C1D7DE; }
-
-.is-user-input {
-  color: #0000FF; }
+  background-color: #DDDDDD; }
 
 .is-conflicted {
-  text-shadow: 0px 3px rgba(255, 0, 0, 0.5), 0px 0px 3px rgba(255, 0, 0, 0.5), 0px 0px 3px rgba(255, 0, 0, 0.5), 0px 3px rgba(255, 0, 0, 0.5); }
+  text-shadow: 0px 0px 15px rgba(255, 0, 0, 0.5), 0px 0px 15px rgba(255, 0, 0, 0.5), 0px 0px 15px rgba(255, 0, 0, 0.5), 0px 0px 15px rgba(255, 0, 0, 0.5); }
+
+.number {
+  font-weight: bold;
+  padding: 10px;
+  font-size: 24px;
+  text-align: center;
+  color: #0000FF; }
+
+.is-static {
+  color: #000000; }
