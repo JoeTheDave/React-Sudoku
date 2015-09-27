@@ -54,30 +54,31 @@
   border-top: solid 1px #CCCCCC;
   border-right: solid 1px #CCCCCC;
   @include no-user-select();
-}
 
-.top-border {
-	border-top: solid 5px #CCCCCC;
-}
+  &.top-border {
+    border-top: solid 5px #CCCCCC;
+  }
 
-.right-border {
-	border-right: solid 5px #CCCCCC;
-}
+  &.right-border {
+    border-right: solid 5px #CCCCCC;
+  }
 
-.passive {
-  background-color: #EEEEEE;
-}
+  &.passive {
+    background-color: #EEEEEE;
+  }
 
-.active {
-  background-color: #BBBBBB;
-}
+  &.active {
+    background-color: #BBBBBB;
+  }
 
-.related-to-active {
-  background-color: #DDDDDD;
-}
+  &.related-to-active {
+    background-color: #DDDDDD;
+  }
 
-.is-conflicted {
-	@include text-glow(0px, 15px, rgba(255, 0, 0, 0.5));
+  &.is-conflicted {
+    @include text-glow(0px, 15px, rgba(255, 0, 0, 0.5));
+  }
+
 }
 
 // number /////////////////////////////////////////////////////////////////////////////////////////
@@ -88,8 +89,31 @@
   font-size: 24px;
   text-align: center;
   color: #0000FF;
+
+  &.is-static {
+    color: #000000;
+  }
+
 }
 
-.is-static {
-	color: #000000;
+// clue-marks /////////////////////////////////////////////////////////////////////////////////////////
+
+.clue-marks {
+
+  .clue-mark {
+    color: #0000FF;
+    float: left;
+    width: 12px;
+    height: 12px;
+    padding: 2px;
+    font-size: 11px;
+    text-align: center;
+  }
 }
+
+
+
+
+
+
+

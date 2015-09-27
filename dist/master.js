@@ -334,9 +334,7 @@ function drainQueue() {
         currentQueue = queue;
         queue = [];
         while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
+            currentQueue[queueIndex].run();
         }
         queueIndex = -1;
         len = queue.length;
@@ -388,6 +386,7 @@ process.binding = function (name) {
     throw new Error('process.binding is not supported');
 };
 
+// TODO(shtylman)
 process.cwd = function () { return '/' };
 process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
@@ -42258,8 +42257,8 @@ var ClueMarks = React.createClass({ displayName: "ClueMarks",
   markOptions: [], //[1, 2, 3, 4, 5, 6, 7, 8, 9],
   render: function render() {
     var self = this;
-    return React.createElement("div", null, this.props.marks.map(function (mark, index) {
-      return React.createElement("div", { key: index }, mark);
+    return React.createElement("div", { className: "clue-marks" }, this.props.marks.map(function (mark, index) {
+      return React.createElement("div", { className: "clue-mark", key: index }, mark);
     }));
   }
 });
@@ -42579,7 +42578,6 @@ var initialize = function initialize() {
   applicationData.grid = sudokuService.generatePuzzleData();
   addGridSquareProperties();
   hideNumbers(45);
-  //console.log(applicationData.grid);
 };
 
 var addGridSquareProperties = function addGridSquareProperties() {
@@ -42675,12 +42673,38 @@ var assignNumberToSelectedGridSquare = function assignNumberToSelectedGridSquare
   updateGridHighlights();
 };
 
-var assignClueMarkToSelectedGridSquare = function assignClueMarkToSelectedGridSquare(number) {
+var toggleClueMarkOnSelectedGridSquare = function toggleClueMarkOnSelectedGridSquare(number) {
   if (_.contains(applicationData.selectedGridSquare.clueMarks, number)) {
-    applicationData.selectedGridSquare.clueMarks = _.difference(applicationData.selectedGridSquare.clueMarks, [number]);
+    removeClueMarkFromSelectedGridSquare(number);
   } else {
-    applicationData.selectedGridSquare.clueMarks.push(number);
+    addClueMarkToSelectedGridSquare(number);
   }
+};
+
+var removeClueMarkFromSelectedGridSquare = function removeClueMarkFromSelectedGridSquare(number) {
+  applicationData.selectedGridSquare.clueMarks = _.difference(applicationData.selectedGridSquare.clueMarks, [number]);
+  arrangeClueMarks();
+};
+
+var addClueMarkToSelectedGridSquare = function addClueMarkToSelectedGridSquare(number) {
+  applicationData.selectedGridSquare.clueMarks.push(number);
+  arrangeClueMarks();
+};
+
+var arrangeClueMarks = function arrangeClueMarks() {
+  var arrangedClueMarks = [];
+  for (var number = 1; number <= 9; number++) {
+    if (slectedGridSquareClueMarksContainsNumber(number)) {
+      arrangedClueMarks.push(number);
+    } else {
+      arrangedClueMarks.push(null);
+    }
+  }
+  applicationData.selectedGridSquare.clueMarks = arrangedClueMarks;
+};
+
+var slectedGridSquareClueMarksContainsNumber = function slectedGridSquareClueMarksContainsNumber(number) {
+  return _.contains(applicationData.selectedGridSquare.clueMarks, number);
 };
 
 var clearGridSquare = function clearGridSquare() {
@@ -42752,7 +42776,7 @@ dispatcher.register(function (action) {
       break;
 
     case actionTypes.INSERT_CLUE:
-      assignClueMarkToSelectedGridSquare(action.number);
+      toggleClueMarkOnSelectedGridSquare(action.number);
       applicationStore.emitChange();
       break;
 

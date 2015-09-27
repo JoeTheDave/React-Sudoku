@@ -22,7 +22,6 @@ var initialize = function () {
   applicationData.grid = sudokuService.generatePuzzleData();
   addGridSquareProperties();
   hideNumbers(45);
-  //console.log(applicationData.grid);
 };
 
 var addGridSquareProperties = function() {
@@ -119,12 +118,38 @@ var assignNumberToSelectedGridSquare = function (number) {
   updateGridHighlights();
 };
 
-var assignClueMarkToSelectedGridSquare = function (number) {
+var toggleClueMarkOnSelectedGridSquare = function (number) {
   if (_.contains(applicationData.selectedGridSquare.clueMarks, number)) {
-    applicationData.selectedGridSquare.clueMarks = _.difference(applicationData.selectedGridSquare.clueMarks, [number]);
+    removeClueMarkFromSelectedGridSquare(number);
   } else {
-    applicationData.selectedGridSquare.clueMarks.push(number);
+    addClueMarkToSelectedGridSquare(number);
   }
+};
+
+var removeClueMarkFromSelectedGridSquare = function (number) {
+  applicationData.selectedGridSquare.clueMarks = _.difference(applicationData.selectedGridSquare.clueMarks, [number]);
+  arrangeClueMarks();
+};
+
+var addClueMarkToSelectedGridSquare = function (number) {
+  applicationData.selectedGridSquare.clueMarks.push(number);
+  arrangeClueMarks();
+};
+
+var arrangeClueMarks = function () {
+  var arrangedClueMarks = [];
+  for (var number = 1; number <= 9; number++) {
+    if (slectedGridSquareClueMarksContainsNumber(number)) {
+      arrangedClueMarks.push(number);
+    } else {
+      arrangedClueMarks.push(null);
+    }
+  }
+  applicationData.selectedGridSquare.clueMarks = arrangedClueMarks;
+};
+
+var slectedGridSquareClueMarksContainsNumber = function (number) {
+  return _.contains(applicationData.selectedGridSquare.clueMarks, number);
 };
 
 var clearGridSquare = function () {
@@ -196,7 +221,7 @@ dispatcher.register(function (action) {
       break;
 
     case actionTypes.INSERT_CLUE:
-      assignClueMarkToSelectedGridSquare(action.number);
+      toggleClueMarkOnSelectedGridSquare(action.number);
       applicationStore.emitChange();
       break;
 

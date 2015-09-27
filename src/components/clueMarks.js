@@ -11,10 +11,10 @@ var ClueMarks = React.createClass({
   render: function () {
     var self = this;
     return (
-      <div>
+      <div className="clue-marks">
         {this.props.marks.map(function(mark, index) {
           return (
-            <div key={index}>{mark}</div>
+            <div className="clue-mark" key={index}>{mark}</div>
           );
         })}
       </div>
