@@ -7,21 +7,28 @@ var actionTypes = require('../flux/constants').actionTypes;
 var CHANGE_EVENT = require('../flux/constants').changeEvent;
 var gridSquareStates = require('../flux/constants').gridSquareStates;
 var dispatcher = require('../flux/dispatcher');
-var sudokuService = require('../services/Sudoku');
+var applicationActions = require('../actions/applicationActions');
+var sudokuDataService = require('../services/SudokuDataService');
+var SudokuGrid = require('../models/sudokuGrid');
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var applicationData = {
-  grid: [],
-  selectedGridSquare: null
+  sudokuGrid: {
+    gridSquares: [] //throws an error in application component if this isn't initialized.  Dirty and needs to be fixed.
+  }
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var initialize = function () {
-  applicationData.grid = sudokuService.generatePuzzleData();
-  addGridSquareProperties();
-  hideNumbers(45);
+  sudokuDataService.generatePuzzleData().then(function (sudokuData) {
+    applicationActions.initializeSudokuData(sudokuData);
+  });
+};
+
+var initializeSudokuData = function (sudokuData) {
+  applicationData.sudokuGrid = new SudokuGrid(sudokuData);
 };
 
 var addGridSquareProperties = function() {
@@ -31,6 +38,15 @@ var addGridSquareProperties = function() {
     gridSquare.userInput = null;
     gridSquare.isConflicted = false;
     gridSquare.clueMarks = [];
+    gridSquare.setStatusToPassive = function () {
+      this.state = gridSquareStates.PASSIVE;
+    };
+    gridSquare.setStatusToActive = function () {
+      this.state = gridSquareStates.ACTIVE;
+    };
+    gridSquare.setStatusToRelatedToActive = function () {
+      this.state = gridSquareStates.RELATED_TO_ACTIVE;
+    };
   });
 };
 
@@ -48,20 +64,20 @@ var selectGridSquare = function (gridSquare) {
 var updateGridHighlights = function () {
   setAllGridSquaresPassive();
   highlightRelationships(applicationData.selectedGridSquare);
-  highlightConflicts();
+  //highlightConflicts();
   highlightActiveGridSquare(applicationData.selectedGridSquare);
 };
 
 var setAllGridSquaresPassive = function () {
   _.each(applicationData.grid, function (gridSquare) {
-    gridSquare.state = gridSquareStates.PASSIVE;
+    gridSquare.setStatusToPassive();
   });
 };
 
 var highlightRelationships = function (gridSquare) {
   if (gridSquare) {
     _.each(gridSquare.relationships, function (relatedGridSquare) {
-      relatedGridSquare.state = gridSquareStates.RELATED_TO_ACTIVE;
+      relatedGridSquare.setStatusToRelatedToActive();
     });
   }
 };
@@ -86,10 +102,9 @@ var removeConflictsFromAllGridSquares = function () {
   });
 };
 
-
 var highlightActiveGridSquare = function (gridSquare) {
   if (gridSquare) {
-    gridSquare.state = gridSquareStates.ACTIVE;
+    gridSquare.setStatusToActive();
   }
 };
 
@@ -114,8 +129,16 @@ var unselectGridSquare = function () {
 };
 
 var assignNumberToSelectedGridSquare = function (number) {
-  applicationData.selectedGridSquare.userInput = number;
-  updateGridHighlights();
+  if (applicationData.selectedGridSquare && !applicationData.selectedGridSquare.isStatic)
+  {
+    applicationData.selectedGridSquare.userInput = number;
+    updateGridHighlights();
+  }
+};
+
+var eraseClueMarksForGridSquare = function (gridSquare) {
+  gridSquare.clueMarks = [];
+
 };
 
 var toggleClueMarkOnSelectedGridSquare = function (number) {
@@ -128,15 +151,15 @@ var toggleClueMarkOnSelectedGridSquare = function (number) {
 
 var removeClueMarkFromSelectedGridSquare = function (number) {
   applicationData.selectedGridSquare.clueMarks = _.difference(applicationData.selectedGridSquare.clueMarks, [number]);
-  arrangeClueMarks();
+  arrangeClueMarksForGridSquare(applicationData.selectedGridSquare);
 };
 
 var addClueMarkToSelectedGridSquare = function (number) {
   applicationData.selectedGridSquare.clueMarks.push(number);
-  arrangeClueMarks();
+  arrangeClueMarksForGridSquare(applicationData.selectedGridSquare);
 };
 
-var arrangeClueMarks = function () {
+var arrangeClueMarksForGridSquare = function (gridSquare) {
   var arrangedClueMarks = [];
   for (var number = 1; number <= 9; number++) {
     if (slectedGridSquareClueMarksContainsNumber(number)) {
@@ -182,6 +205,11 @@ dispatcher.register(function (action) {
 
     case actionTypes.INITIALIZE_APPLICATION:
       initialize();
+      applicationStore.emitChange();
+      break;
+
+    case actionTypes.INITIALIZE_SUDOKU_DATA:
+      initializeSudokuData(action.sudokuData);
       applicationStore.emitChange();
       break;
 

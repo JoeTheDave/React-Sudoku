@@ -20,11 +20,12 @@ var Application = React.createClass({
   },
   render: function() {
     //console.log(this.state);
+    debugger;
     return (
       <div className="application-component">
-        {this.state.grid.map(function(gridSquare, index) {
+        {this.state.sudokuGrid.gridSquares.map(function(sudokuSquare, index) {
           return (
-            <GridSquare key={index} squareData={gridSquare} />
+            <GridSquare key={index} squareData={sudokuSquare} />
           );
         })}
         <div className="clear"></div>

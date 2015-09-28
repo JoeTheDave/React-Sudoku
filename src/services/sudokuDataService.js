@@ -1,12 +1,14 @@
 'use strict';
 
 var _ = require('lodash');
-var puzzleData = null;
+var Q = require('q');
 
 var generatePuzzleData = function () {
-	puzzleData = new SudokuData();
+  var deferred = Q.defer();
+	var puzzleData = new SudokuData();
 	puzzleData.generate();
-	return puzzleData.grid;
+  deferred.resolve(puzzleData.grid);
+	return deferred.promise;
 };
 
 var SudokuData = function () {

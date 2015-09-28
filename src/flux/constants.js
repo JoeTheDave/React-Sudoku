@@ -5,6 +5,7 @@ var keymirror = require('keymirror');
 module.exports = {
   actionTypes: keymirror({
     INITIALIZE_APPLICATION: null,
+    INITIALIZE_SUDOKU_DATA: null,
 
     MOVE_SELECTION_LEFT: null,
     MOVE_SELECTION_UP: null,
