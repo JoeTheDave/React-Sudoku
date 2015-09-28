@@ -31,48 +31,48 @@ var initializeSudokuData = function (sudokuData) {
   applicationData.sudokuGrid = new SudokuGrid(sudokuData);
 };
 
-var addGridSquareProperties = function() {
-  _.each(applicationData.grid, function (gridSquare) {
-    gridSquare.state = gridSquareStates.PASSIVE;
-    gridSquare.isStatic = true;
-    gridSquare.userInput = null;
-    gridSquare.isConflicted = false;
-    gridSquare.clueMarks = [];
-    gridSquare.setStatusToPassive = function () {
-      this.state = gridSquareStates.PASSIVE;
-    };
-    gridSquare.setStatusToActive = function () {
-      this.state = gridSquareStates.ACTIVE;
-    };
-    gridSquare.setStatusToRelatedToActive = function () {
-      this.state = gridSquareStates.RELATED_TO_ACTIVE;
-    };
-  });
+// var addGridSquareProperties = function() {
+//   _.each(applicationData.grid, function (gridSquare) {
+//     gridSquare.state = gridSquareStates.PASSIVE;
+//     gridSquare.isStatic = true;
+//     gridSquare.userInput = null;
+//     gridSquare.isConflicted = false;
+//     gridSquare.clueMarks = [];
+//     gridSquare.setStatusToPassive = function () {
+//       this.state = gridSquareStates.PASSIVE;
+//     };
+//     gridSquare.setStatusToActive = function () {
+//       this.state = gridSquareStates.ACTIVE;
+//     };
+//     gridSquare.setStatusToRelatedToActive = function () {
+//       this.state = gridSquareStates.RELATED_TO_ACTIVE;
+//     };
+//   });
+// };
+
+// var hideNumbers = function (numberToHide) {
+//   _.each(_.take(_.shuffle(applicationData.grid), numberToHide), function (gridSquare) {
+//     gridSquare.isStatic = false;
+//   });
+// };
+
+var selectGridSquare = function (sudokuSquare) {
+  applicationData.sudokuGrid.setSelectedGridSquare(sudokuSquare);
+  //updateGridHighlights();
 };
 
-var hideNumbers = function (numberToHide) {
-  _.each(_.take(_.shuffle(applicationData.grid), numberToHide), function (gridSquare) {
-    gridSquare.isStatic = false;
-  });
-};
+// var updateGridHighlights = function () {
+//   setAllGridSquaresPassive();
+//   highlightRelationships(applicationData.selectedGridSquare);
+//   //highlightConflicts();
+//   highlightActiveGridSquare(applicationData.selectedGridSquare);
+// };
 
-var selectGridSquare = function (gridSquare) {
-  applicationData.selectedGridSquare = gridSquare;
-  updateGridHighlights();
-};
-
-var updateGridHighlights = function () {
-  setAllGridSquaresPassive();
-  highlightRelationships(applicationData.selectedGridSquare);
-  //highlightConflicts();
-  highlightActiveGridSquare(applicationData.selectedGridSquare);
-};
-
-var setAllGridSquaresPassive = function () {
-  _.each(applicationData.grid, function (gridSquare) {
-    gridSquare.setStatusToPassive();
-  });
-};
+// var setAllGridSquaresPassive = function () {
+//   _.each(applicationData.grid, function (gridSquare) {
+//     gridSquare.setStatusToPassive();
+//   });
+// };
 
 var highlightRelationships = function (gridSquare) {
   if (gridSquare) {
@@ -102,30 +102,30 @@ var removeConflictsFromAllGridSquares = function () {
   });
 };
 
-var highlightActiveGridSquare = function (gridSquare) {
-  if (gridSquare) {
-    gridSquare.setStatusToActive();
-  }
-};
+// var highlightActiveGridSquare = function (gridSquare) {
+//   if (gridSquare) {
+//     gridSquare.setStatusToActive();
+//   }
+// };
 
 var moveSelectionLeft = function () {
-  selectGridSquare(applicationData.selectedGridSquare.leftNeighbor);
+  applicationData.sudokuGrid.moveSelectionLeft();
 };
 
 var moveSelectionUp = function () {
-  selectGridSquare(applicationData.selectedGridSquare.upperNeighbor);
+  applicationData.sudokuGrid.moveSelectionUp();
 };
 
 var moveSelectionRight = function () {
-  selectGridSquare(applicationData.selectedGridSquare.rightNeighbor);
+  applicationData.sudokuGrid.moveSelectionRight();
 };
 
 var moveSelectionDown = function () {
-  selectGridSquare(applicationData.selectedGridSquare.lowerNeighbor);
+  applicationData.sudokuGrid.moveSelectionDown();
 };
 
 var unselectGridSquare = function () {
-  selectGridSquare(null);
+  applicationData.sudokuGrid.unselectGridSquare();
 };
 
 var assignNumberToSelectedGridSquare = function (number) {

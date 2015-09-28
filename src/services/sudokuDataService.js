@@ -19,6 +19,7 @@ SudokuData.prototype.generate = function () {
 	this.establishRelationships();
   this.establishDirectNeighborRelationships();
 	this.populate();
+  this.simplifyRelatedObjectsToIdReferences();
 };
 SudokuData.prototype.createGridSquares = function () {
 	for (var id = 0; id <= 80; id++) {
@@ -101,6 +102,15 @@ SudokuData.prototype.clearRandomGridSquares = function (numberToClear) {
 	var gridSquaresToClear = _.take(_.shuffle(populatedGridSquares), numberToClear);
   _.each(gridSquaresToClear, function (gridSquare) {
     gridSquare.number = null;
+  });
+};
+SudokuData.prototype.simplifyRelatedObjectsToIdReferences = function () {
+  _.each(this.grid, function (gridSquare) {
+    gridSquare.leftNeighbor = gridSquare.leftNeighbor.id;
+    gridSquare.upperNeighbor = gridSquare.upperNeighbor.id;
+    gridSquare.rightNeighbor = gridSquare.rightNeighbor.id;
+    gridSquare.lowerNeighbor = gridSquare.lowerNeighbor.id;
+    gridSquare.relationships = _.sortBy(_.pluck(gridSquare.relationships, 'id'));
   });
 };
 

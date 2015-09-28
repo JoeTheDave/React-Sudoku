@@ -44295,8 +44295,6 @@ var Application = React.createClass({ displayName: "Application",
     this.setState(applicationStore.getData());
   },
   render: function render() {
-    //console.log(this.state);
-    debugger;
     return React.createElement("div", { className: "application-component" }, this.state.sudokuGrid.gridSquares.map(function (sudokuSquare, index) {
       return React.createElement(GridSquare, { key: index, squareData: sudokuSquare });
     }), React.createElement("div", { className: "clear" }));
@@ -44315,7 +44313,6 @@ var ClueMarks = React.createClass({ displayName: "ClueMarks",
   propTypes: {
     marks: React.PropTypes.array.isRequired
   },
-  markOptions: [], //[1, 2, 3, 4, 5, 6, 7, 8, 9],
   render: function render() {
     var self = this;
     return React.createElement("div", { className: "clue-marks" }, this.props.marks.map(function (mark, index) {
@@ -44449,12 +44446,70 @@ var SudokuSquare = require('./sudokuSquare');
 
 var SudokuGrid = function SudokuGrid(sudokuPuzzleData) {
 	this.gridSquares = [];
+	this.selectedGridSquare = null;
 	this.initialize(sudokuPuzzleData);
 };
 SudokuGrid.prototype.initialize = function (sudokuPuzzleData) {
 	var sudokuGrid = this;
-	_.each(sudokuPuzzleData, function (gridSquareData) {
-		sudokuGrid.gridSquares.push(new SudokuSquare(gridSquareData));
+	_.each(sudokuPuzzleData, function (sudokuSquareData) {
+		sudokuGrid.gridSquares.push(new SudokuSquare(sudokuSquareData));
+	});
+	this.establishGridRelationships();
+	this.hideNumbers(40);
+};
+SudokuGrid.prototype.establishGridRelationships = function () {
+	var sudokuGrid = this;
+	_.each(this.gridSquares, function (sudokuSquare) {
+		sudokuSquare.establishRelationships(sudokuGrid);
+	});
+};
+SudokuGrid.prototype.getSudokuSquareById = function (id) {
+	return _.find(this.gridSquares, function (sudokuSquare) {
+		return sudokuSquare.id === id;
+	});
+};
+SudokuGrid.prototype.hideNumbers = function (numberToHide) {
+	_.each(_.take(_.shuffle(this.gridSquares), numberToHide), function (sudokuSquare) {
+		sudokuSquare.isStatic = false;
+	});
+};
+
+SudokuGrid.prototype.moveSelectionLeft = function () {
+	if (this.selectedGridSquare) {
+		this.setSelectedGridSquare(this.selectedGridSquare.leftNeighbor);
+	}
+};
+SudokuGrid.prototype.moveSelectionUp = function () {
+	if (this.selectedGridSquare) {
+		this.setSelectedGridSquare(this.selectedGridSquare.upperNeighbor);
+	}
+};
+SudokuGrid.prototype.moveSelectionRight = function () {
+	if (this.selectedGridSquare) {
+		this.setSelectedGridSquare(this.selectedGridSquare.rightNeighbor);
+	}
+};
+SudokuGrid.prototype.moveSelectionDown = function () {
+	if (this.selectedGridSquare) {
+		this.setSelectedGridSquare(this.selectedGridSquare.lowerNeighbor);
+	}
+};
+SudokuGrid.prototype.unselectGridSquare = function () {
+	this.setSelectedGridSquare(null);
+};
+SudokuGrid.prototype.setSelectedGridSquare = function (sudokuSquare) {
+	this.selectedGridSquare = sudokuSquare;
+	this.highlightGridSquaresBasedOnSelection();
+};
+SudokuGrid.prototype.highlightGridSquaresBasedOnSelection = function () {
+	this.setAllGridSquaresPassive();
+	if (this.selectedGridSquare) {
+		this.selectedGridSquare.highlightAsActive();
+	}
+};
+SudokuGrid.prototype.setAllGridSquaresPassive = function () {
+	_.each(this.gridSquares, function (sudokuSquare) {
+		sudokuSquare.setStatusToPassive();
 	});
 };
 
@@ -44473,6 +44528,17 @@ var SudokuSquare = function SudokuSquare(gridSquareData) {
   this.userInput = null;
   //this.isConflicted = false;
   this.clueMarks = [];
+  this.sudokuGrid = null;
+};
+SudokuSquare.prototype.establishRelationships = function (sudokuGrid) {
+  this.sudokuGrid = sudokuGrid;
+  this.leftNeighbor = sudokuGrid.getSudokuSquareById(this.leftNeighbor);
+  this.upperNeighbor = sudokuGrid.getSudokuSquareById(this.upperNeighbor);
+  this.rightNeighbor = sudokuGrid.getSudokuSquareById(this.rightNeighbor);
+  this.lowerNeighbor = sudokuGrid.getSudokuSquareById(this.lowerNeighbor);
+  this.relationships = _.map(this.relationships, function (relationship) {
+    return sudokuGrid.getSudokuSquareById(relationship);
+  });
 };
 SudokuSquare.prototype.setStatusToPassive = function () {
   this.state = gridSquareStates.PASSIVE;
@@ -44482,6 +44548,12 @@ SudokuSquare.prototype.setStatusToActive = function () {
 };
 SudokuSquare.prototype.setStatusToRelatedToActive = function () {
   this.state = gridSquareStates.RELATED_TO_ACTIVE;
+};
+SudokuSquare.prototype.highlightAsActive = function () {
+  this.setStatusToActive();
+  _.each(this.relationships, function (relatedSquare) {
+    relatedSquare.setStatusToRelatedToActive();
+  });
 };
 
 module.exports = SudokuSquare;
@@ -44508,6 +44580,7 @@ SudokuData.prototype.generate = function () {
   this.establishRelationships();
   this.establishDirectNeighborRelationships();
   this.populate();
+  this.simplifyRelatedObjectsToIdReferences();
 };
 SudokuData.prototype.createGridSquares = function () {
   for (var id = 0; id <= 80; id++) {
@@ -44590,6 +44663,15 @@ SudokuData.prototype.clearRandomGridSquares = function (numberToClear) {
   var gridSquaresToClear = _.take(_.shuffle(populatedGridSquares), numberToClear);
   _.each(gridSquaresToClear, function (gridSquare) {
     gridSquare.number = null;
+  });
+};
+SudokuData.prototype.simplifyRelatedObjectsToIdReferences = function () {
+  _.each(this.grid, function (gridSquare) {
+    gridSquare.leftNeighbor = gridSquare.leftNeighbor.id;
+    gridSquare.upperNeighbor = gridSquare.upperNeighbor.id;
+    gridSquare.rightNeighbor = gridSquare.rightNeighbor.id;
+    gridSquare.lowerNeighbor = gridSquare.lowerNeighbor.id;
+    gridSquare.relationships = _.sortBy(_.pluck(gridSquare.relationships, 'id'));
   });
 };
 
@@ -44696,48 +44778,48 @@ var initializeSudokuData = function initializeSudokuData(sudokuData) {
   applicationData.sudokuGrid = new SudokuGrid(sudokuData);
 };
 
-var addGridSquareProperties = function addGridSquareProperties() {
-  _.each(applicationData.grid, function (gridSquare) {
-    gridSquare.state = gridSquareStates.PASSIVE;
-    gridSquare.isStatic = true;
-    gridSquare.userInput = null;
-    gridSquare.isConflicted = false;
-    gridSquare.clueMarks = [];
-    gridSquare.setStatusToPassive = function () {
-      this.state = gridSquareStates.PASSIVE;
-    };
-    gridSquare.setStatusToActive = function () {
-      this.state = gridSquareStates.ACTIVE;
-    };
-    gridSquare.setStatusToRelatedToActive = function () {
-      this.state = gridSquareStates.RELATED_TO_ACTIVE;
-    };
-  });
+// var addGridSquareProperties = function() {
+//   _.each(applicationData.grid, function (gridSquare) {
+//     gridSquare.state = gridSquareStates.PASSIVE;
+//     gridSquare.isStatic = true;
+//     gridSquare.userInput = null;
+//     gridSquare.isConflicted = false;
+//     gridSquare.clueMarks = [];
+//     gridSquare.setStatusToPassive = function () {
+//       this.state = gridSquareStates.PASSIVE;
+//     };
+//     gridSquare.setStatusToActive = function () {
+//       this.state = gridSquareStates.ACTIVE;
+//     };
+//     gridSquare.setStatusToRelatedToActive = function () {
+//       this.state = gridSquareStates.RELATED_TO_ACTIVE;
+//     };
+//   });
+// };
+
+// var hideNumbers = function (numberToHide) {
+//   _.each(_.take(_.shuffle(applicationData.grid), numberToHide), function (gridSquare) {
+//     gridSquare.isStatic = false;
+//   });
+// };
+
+var selectGridSquare = function selectGridSquare(sudokuSquare) {
+  applicationData.sudokuGrid.setSelectedGridSquare(sudokuSquare);
+  //updateGridHighlights();
 };
 
-var hideNumbers = function hideNumbers(numberToHide) {
-  _.each(_.take(_.shuffle(applicationData.grid), numberToHide), function (gridSquare) {
-    gridSquare.isStatic = false;
-  });
-};
+// var updateGridHighlights = function () {
+//   setAllGridSquaresPassive();
+//   highlightRelationships(applicationData.selectedGridSquare);
+//   //highlightConflicts();
+//   highlightActiveGridSquare(applicationData.selectedGridSquare);
+// };
 
-var selectGridSquare = function selectGridSquare(gridSquare) {
-  applicationData.selectedGridSquare = gridSquare;
-  updateGridHighlights();
-};
-
-var updateGridHighlights = function updateGridHighlights() {
-  setAllGridSquaresPassive();
-  highlightRelationships(applicationData.selectedGridSquare);
-  //highlightConflicts();
-  highlightActiveGridSquare(applicationData.selectedGridSquare);
-};
-
-var setAllGridSquaresPassive = function setAllGridSquaresPassive() {
-  _.each(applicationData.grid, function (gridSquare) {
-    gridSquare.setStatusToPassive();
-  });
-};
+// var setAllGridSquaresPassive = function () {
+//   _.each(applicationData.grid, function (gridSquare) {
+//     gridSquare.setStatusToPassive();
+//   });
+// };
 
 var highlightRelationships = function highlightRelationships(gridSquare) {
   if (gridSquare) {
@@ -44767,30 +44849,30 @@ var removeConflictsFromAllGridSquares = function removeConflictsFromAllGridSquar
   });
 };
 
-var highlightActiveGridSquare = function highlightActiveGridSquare(gridSquare) {
-  if (gridSquare) {
-    gridSquare.setStatusToActive();
-  }
-};
+// var highlightActiveGridSquare = function (gridSquare) {
+//   if (gridSquare) {
+//     gridSquare.setStatusToActive();
+//   }
+// };
 
 var moveSelectionLeft = function moveSelectionLeft() {
-  selectGridSquare(applicationData.selectedGridSquare.leftNeighbor);
+  applicationData.sudokuGrid.moveSelectionLeft();
 };
 
 var moveSelectionUp = function moveSelectionUp() {
-  selectGridSquare(applicationData.selectedGridSquare.upperNeighbor);
+  applicationData.sudokuGrid.moveSelectionUp();
 };
 
 var moveSelectionRight = function moveSelectionRight() {
-  selectGridSquare(applicationData.selectedGridSquare.rightNeighbor);
+  applicationData.sudokuGrid.moveSelectionRight();
 };
 
 var moveSelectionDown = function moveSelectionDown() {
-  selectGridSquare(applicationData.selectedGridSquare.lowerNeighbor);
+  applicationData.sudokuGrid.moveSelectionDown();
 };
 
 var unselectGridSquare = function unselectGridSquare() {
-  selectGridSquare(null);
+  applicationData.sudokuGrid.unselectGridSquare();
 };
 
 var assignNumberToSelectedGridSquare = function assignNumberToSelectedGridSquare(number) {

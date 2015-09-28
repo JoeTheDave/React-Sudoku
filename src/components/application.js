@@ -19,8 +19,6 @@ var Application = React.createClass({
     this.setState(applicationStore.getData());
   },
   render: function() {
-    //console.log(this.state);
-    debugger;
     return (
       <div className="application-component">
         {this.state.sudokuGrid.gridSquares.map(function(sudokuSquare, index) {

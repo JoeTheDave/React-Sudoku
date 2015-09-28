@@ -7,7 +7,6 @@ var ClueMarks = React.createClass({
   propTypes: {
     marks: React.PropTypes.array.isRequired
   },
-  markOptions: [],//[1, 2, 3, 4, 5, 6, 7, 8, 9],
   render: function () {
     var self = this;
     return (
