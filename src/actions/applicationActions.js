@@ -5,13 +5,20 @@ var actionTypes = require('../flux/constants').actionTypes;
 
 module.exports = {
 
-	initializeApplication: function() {
+	initializeApplication: function () {
     dispatcher.dispatch({
       actionType: actionTypes.INITIALIZE_APPLICATION
     });
 	},
 
-	gridSquareSelected: function(gridSquare) {
+  initializeSudokuData: function (sudokuData) {
+    dispatcher.dispatch({
+      actionType: actionTypes.INITIALIZE_SUDOKU_DATA,
+      sudokuData: sudokuData
+    });
+  },
+
+	gridSquareSelected: function (gridSquare) {
     dispatcher.dispatch({
       actionType: actionTypes.SELECT_GRID_SQUARE,
       gridSquare: gridSquare
