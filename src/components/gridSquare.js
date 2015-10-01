@@ -16,7 +16,7 @@ var GridSquare = React.createClass({
   composeClass: function () {
     var id = this.props.squareData.id;
     var className = 'grid-square ' + this.convertStateToClassName(this.props.squareData.state);
-    if (this.props.squareData.isConflicted) {
+    if (this.props.squareData.hasConflicts()) {
       className += ' is-conflicted';
     }
     if ((id >= 27 && id <= 35) || (id >= 54 && id <= 62)) {

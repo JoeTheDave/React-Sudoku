@@ -31,82 +31,9 @@ var initializeSudokuData = function (sudokuData) {
   applicationData.sudokuGrid = new SudokuGrid(sudokuData);
 };
 
-// var addGridSquareProperties = function() {
-//   _.each(applicationData.grid, function (gridSquare) {
-//     gridSquare.state = gridSquareStates.PASSIVE;
-//     gridSquare.isStatic = true;
-//     gridSquare.userInput = null;
-//     gridSquare.isConflicted = false;
-//     gridSquare.clueMarks = [];
-//     gridSquare.setStatusToPassive = function () {
-//       this.state = gridSquareStates.PASSIVE;
-//     };
-//     gridSquare.setStatusToActive = function () {
-//       this.state = gridSquareStates.ACTIVE;
-//     };
-//     gridSquare.setStatusToRelatedToActive = function () {
-//       this.state = gridSquareStates.RELATED_TO_ACTIVE;
-//     };
-//   });
-// };
-
-// var hideNumbers = function (numberToHide) {
-//   _.each(_.take(_.shuffle(applicationData.grid), numberToHide), function (gridSquare) {
-//     gridSquare.isStatic = false;
-//   });
-// };
-
 var selectGridSquare = function (sudokuSquare) {
   applicationData.sudokuGrid.setSelectedGridSquare(sudokuSquare);
-  //updateGridHighlights();
 };
-
-// var updateGridHighlights = function () {
-//   setAllGridSquaresPassive();
-//   highlightRelationships(applicationData.selectedGridSquare);
-//   //highlightConflicts();
-//   highlightActiveGridSquare(applicationData.selectedGridSquare);
-// };
-
-// var setAllGridSquaresPassive = function () {
-//   _.each(applicationData.grid, function (gridSquare) {
-//     gridSquare.setStatusToPassive();
-//   });
-// };
-
-var highlightRelationships = function (gridSquare) {
-  if (gridSquare) {
-    _.each(gridSquare.relationships, function (relatedGridSquare) {
-      relatedGridSquare.setStatusToRelatedToActive();
-    });
-  }
-};
-
-var highlightConflicts = function () {
-  removeConflictsFromAllGridSquares();
-  _.each(applicationData.grid, function (gridSquare) {
-    _.each(gridSquare.relationships, function (relatedGridSquare) {
-      var gridSquareIsInConflictWithRelatedGridSquare = gridSquare.userInput === relatedGridSquare.number || gridSquare.userInput === relatedGridSquare.userInput;
-      var relatedGridSquareIsNotBlank = relatedGridSquare.isStatic || relatedGridSquare.userInput !== null;
-      if (gridSquare.userInput !== null && gridSquareIsInConflictWithRelatedGridSquare && relatedGridSquareIsNotBlank) {
-        gridSquare.isConflicted = true;
-        relatedGridSquare.isConflicted = true;
-      }
-    });
-  });
-};
-
-var removeConflictsFromAllGridSquares = function () {
-  _.each(applicationData.grid, function (gridSquare) {
-    gridSquare.isConflicted = false;
-  });
-};
-
-// var highlightActiveGridSquare = function (gridSquare) {
-//   if (gridSquare) {
-//     gridSquare.setStatusToActive();
-//   }
-// };
 
 var moveSelectionLeft = function () {
   applicationData.sudokuGrid.moveSelectionLeft();
@@ -129,55 +56,15 @@ var unselectGridSquare = function () {
 };
 
 var assignNumberToSelectedGridSquare = function (number) {
-  if (applicationData.selectedGridSquare && !applicationData.selectedGridSquare.isStatic)
-  {
-    applicationData.selectedGridSquare.userInput = number;
-    updateGridHighlights();
-  }
-};
-
-var eraseClueMarksForGridSquare = function (gridSquare) {
-  gridSquare.clueMarks = [];
-
-};
-
-var toggleClueMarkOnSelectedGridSquare = function (number) {
-  if (_.contains(applicationData.selectedGridSquare.clueMarks, number)) {
-    removeClueMarkFromSelectedGridSquare(number);
-  } else {
-    addClueMarkToSelectedGridSquare(number);
-  }
-};
-
-var removeClueMarkFromSelectedGridSquare = function (number) {
-  applicationData.selectedGridSquare.clueMarks = _.difference(applicationData.selectedGridSquare.clueMarks, [number]);
-  arrangeClueMarksForGridSquare(applicationData.selectedGridSquare);
-};
-
-var addClueMarkToSelectedGridSquare = function (number) {
-  applicationData.selectedGridSquare.clueMarks.push(number);
-  arrangeClueMarksForGridSquare(applicationData.selectedGridSquare);
-};
-
-var arrangeClueMarksForGridSquare = function (gridSquare) {
-  var arrangedClueMarks = [];
-  for (var number = 1; number <= 9; number++) {
-    if (slectedGridSquareClueMarksContainsNumber(number)) {
-      arrangedClueMarks.push(number);
-    } else {
-      arrangedClueMarks.push(null);
-    }
-  }
-  applicationData.selectedGridSquare.clueMarks = arrangedClueMarks;
-};
-
-var slectedGridSquareClueMarksContainsNumber = function (number) {
-  return _.contains(applicationData.selectedGridSquare.clueMarks, number);
+  applicationData.sudokuGrid.assignNumberToSelectedGridSquare(number);
 };
 
 var clearGridSquare = function () {
-  applicationData.selectedGridSquare.userInput = null;
-  updateGridHighlights();
+  applicationData.sudokuGrid.assignNumberToSelectedGridSquare(null);
+};
+
+var toggleClueMarkOnSelectedGridSquare = function (number) {
+  applicationData.sudokuGrid.toggleClueMarkOnSelectedGridSquare(number);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

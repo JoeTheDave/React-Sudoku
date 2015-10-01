@@ -32,7 +32,6 @@ SudokuGrid.prototype.hideNumbers = function (numberToHide) {
     sudokuSquare.isStatic = false;
   });
 };
-
 SudokuGrid.prototype.moveSelectionLeft = function () {
 	if (this.selectedGridSquare) {
 		this.setSelectedGridSquare(this.selectedGridSquare.leftNeighbor);
@@ -70,6 +69,14 @@ SudokuGrid.prototype.setAllGridSquaresPassive = function () {
   _.each(this.gridSquares, function (sudokuSquare) {
     sudokuSquare.setStatusToPassive();
   });
+};
+SudokuGrid.prototype.assignNumberToSelectedGridSquare = function (number) {
+	if (this.selectedGridSquare && !this.selectedGridSquare.isStatic) {
+		this.selectedGridSquare.setNumber(number);
+	}
+};
+SudokuGrid.prototype.toggleClueMarkOnSelectedGridSquare = function (number) {
+	this.selectedGridSquare.toggleClueMark(number);
 };
 
 module.exports = SudokuGrid;
