@@ -87,7 +87,7 @@ var applicationStore = assign({}, EventEmitter.prototype, {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 dispatcher.register(function (action) {
-  console.log(action.actionType);
+  //console.log(action.actionType);
   switch (action.actionType) {
 
     case actionTypes.INITIALIZE_APPLICATION:

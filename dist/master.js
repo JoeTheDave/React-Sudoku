@@ -44294,6 +44294,7 @@ var Application = React.createClass({ displayName: "Application",
     this.setState(applicationStore.getData());
   },
   render: function render() {
+    console.log(this.state);
     return React.createElement("div", { className: "application-component" }, this.state.sudokuGrid.gridSquares.map(function (sudokuSquare, index) {
       return React.createElement(GridSquare, { key: index, squareData: sudokuSquare });
     }), React.createElement("div", { className: "clear" }));
@@ -44448,6 +44449,7 @@ var SudokuGrid = function SudokuGrid(sudokuPuzzleData) {
 	this.selectedGridSquare = null;
 	this.initialize(sudokuPuzzleData);
 };
+
 SudokuGrid.prototype.initialize = function (sudokuPuzzleData) {
 	var sudokuGrid = this;
 	_.each(sudokuPuzzleData, function (sudokuSquareData) {
@@ -44456,65 +44458,78 @@ SudokuGrid.prototype.initialize = function (sudokuPuzzleData) {
 	this.establishGridRelationships();
 	this.hideNumbers(40);
 };
+
 SudokuGrid.prototype.establishGridRelationships = function () {
 	var sudokuGrid = this;
 	_.each(this.gridSquares, function (sudokuSquare) {
 		sudokuSquare.establishRelationships(sudokuGrid);
 	});
 };
+
 SudokuGrid.prototype.getSudokuSquareById = function (id) {
 	return _.find(this.gridSquares, function (sudokuSquare) {
 		return sudokuSquare.id === id;
 	});
 };
+
 SudokuGrid.prototype.hideNumbers = function (numberToHide) {
 	_.each(_.take(_.shuffle(this.gridSquares), numberToHide), function (sudokuSquare) {
 		sudokuSquare.isStatic = false;
 	});
 };
+
 SudokuGrid.prototype.moveSelectionLeft = function () {
 	if (this.selectedGridSquare) {
 		this.setSelectedGridSquare(this.selectedGridSquare.leftNeighbor);
 	}
 };
+
 SudokuGrid.prototype.moveSelectionUp = function () {
 	if (this.selectedGridSquare) {
 		this.setSelectedGridSquare(this.selectedGridSquare.upperNeighbor);
 	}
 };
+
 SudokuGrid.prototype.moveSelectionRight = function () {
 	if (this.selectedGridSquare) {
 		this.setSelectedGridSquare(this.selectedGridSquare.rightNeighbor);
 	}
 };
+
 SudokuGrid.prototype.moveSelectionDown = function () {
 	if (this.selectedGridSquare) {
 		this.setSelectedGridSquare(this.selectedGridSquare.lowerNeighbor);
 	}
 };
+
 SudokuGrid.prototype.unselectGridSquare = function () {
 	this.setSelectedGridSquare(null);
 };
+
 SudokuGrid.prototype.setSelectedGridSquare = function (sudokuSquare) {
 	this.selectedGridSquare = sudokuSquare;
 	this.highlightGridSquaresBasedOnSelection();
 };
+
 SudokuGrid.prototype.highlightGridSquaresBasedOnSelection = function () {
 	this.setAllGridSquaresPassive();
 	if (this.selectedGridSquare) {
 		this.selectedGridSquare.highlightAsActive();
 	}
 };
+
 SudokuGrid.prototype.setAllGridSquaresPassive = function () {
 	_.each(this.gridSquares, function (sudokuSquare) {
 		sudokuSquare.setStatusToPassive();
 	});
 };
+
 SudokuGrid.prototype.assignNumberToSelectedGridSquare = function (number) {
 	if (this.selectedGridSquare && !this.selectedGridSquare.isStatic) {
 		this.selectedGridSquare.setNumber(number);
 	}
 };
+
 SudokuGrid.prototype.toggleClueMarkOnSelectedGridSquare = function (number) {
 	this.selectedGridSquare.toggleClueMark(number);
 };
@@ -44528,99 +44543,131 @@ var _ = require('lodash');
 var gridSquareStates = require('../flux/constants').gridSquareStates;
 
 var SudokuSquare = function SudokuSquare(gridSquareData) {
-  _.extend(this, gridSquareData);
-  this.state = gridSquareStates.PASSIVE;
-  this.isStatic = true;
-  this.userInput = null;
-  this.conflicts = [];
-  this.clueMarks = [];
-  this.sudokuGrid = null;
+	_.extend(this, gridSquareData);
+	this.state = gridSquareStates.PASSIVE;
+	this.isStatic = true;
+	this.userInput = null;
+	this.conflicts = [];
+	this.clueMarks = [];
+	this.sudokuGrid = null;
+
+	this.clearClueMarks();
 };
+
 SudokuSquare.prototype.value = function () {
-  return this.isStatic ? this.number : this.userInput;
+	return this.isStatic ? this.number : this.userInput;
 };
+
 SudokuSquare.prototype.hasConflicts = function () {
-  return this.conflicts.length > 0;
+	return this.conflicts.length > 0;
 };
+
 SudokuSquare.prototype.establishRelationships = function (sudokuGrid) {
-  this.sudokuGrid = sudokuGrid;
-  this.leftNeighbor = sudokuGrid.getSudokuSquareById(this.leftNeighbor);
-  this.upperNeighbor = sudokuGrid.getSudokuSquareById(this.upperNeighbor);
-  this.rightNeighbor = sudokuGrid.getSudokuSquareById(this.rightNeighbor);
-  this.lowerNeighbor = sudokuGrid.getSudokuSquareById(this.lowerNeighbor);
-  this.relationships = _.map(this.relationships, function (relationship) {
-    return sudokuGrid.getSudokuSquareById(relationship);
-  });
+	this.sudokuGrid = sudokuGrid;
+	this.leftNeighbor = sudokuGrid.getSudokuSquareById(this.leftNeighbor);
+	this.upperNeighbor = sudokuGrid.getSudokuSquareById(this.upperNeighbor);
+	this.rightNeighbor = sudokuGrid.getSudokuSquareById(this.rightNeighbor);
+	this.lowerNeighbor = sudokuGrid.getSudokuSquareById(this.lowerNeighbor);
+	this.relationships = _.map(this.relationships, function (relationship) {
+		return sudokuGrid.getSudokuSquareById(relationship);
+	});
 };
+
 SudokuSquare.prototype.setStatusToPassive = function () {
-  this.state = gridSquareStates.PASSIVE;
+	this.state = gridSquareStates.PASSIVE;
 };
+
 SudokuSquare.prototype.setStatusToActive = function () {
-  this.state = gridSquareStates.ACTIVE;
+	this.state = gridSquareStates.ACTIVE;
 };
+
 SudokuSquare.prototype.setStatusToRelatedToActive = function () {
-  this.state = gridSquareStates.RELATED_TO_ACTIVE;
+	this.state = gridSquareStates.RELATED_TO_ACTIVE;
 };
+
 SudokuSquare.prototype.highlightAsActive = function () {
-  this.setStatusToActive();
-  _.each(this.relationships, function (relatedSquare) {
-    relatedSquare.setStatusToRelatedToActive();
-  });
+	this.setStatusToActive();
+	_.each(this.relationships, function (relatedSquare) {
+		relatedSquare.setStatusToRelatedToActive();
+	});
 };
+
 SudokuSquare.prototype.setNumber = function (number) {
-  this.userInput = number;
-  this.updateConflicts();
+	this.userInput = number;
+	this.updateConflicts();
+	this.clearClueMarks();
+	this.removeClueMarkFromAllRelationships(number);
 };
+
 SudokuSquare.prototype.updateConflicts = function () {
-  this.conflicts = [];
-  var sudokuSquare = this;
-  _.each(this.relationships, function (relationship) {
-    if (sudokuSquare.value() === relationship.value()) {
-      sudokuSquare.addConflict(relationship.id);
-      relationship.addConflict(sudokuSquare.id);
-    } else {
-      sudokuSquare.removeConflict(relationship.id);
-      relationship.removeConflict(sudokuSquare.id);
-    }
-  });
+	this.conflicts = [];
+	var sudokuSquare = this;
+	_.each(this.relationships, function (relationship) {
+		if (sudokuSquare.value() === relationship.value() && sudokuSquare.value() !== null) {
+			sudokuSquare.addConflict(relationship.id);
+			relationship.addConflict(sudokuSquare.id);
+		} else {
+			sudokuSquare.removeConflict(relationship.id);
+			relationship.removeConflict(sudokuSquare.id);
+		}
+	});
 };
+
 SudokuSquare.prototype.addConflict = function (sudokuSquareId) {
-  if (sudokuSquareId !== null && this.id !== sudokuSquareId && !_.contains(this.conflicts, sudokuSquareId)) {
-    this.conflicts.push(sudokuSquareId);
-  }
+	if (sudokuSquareId !== null && this.id !== sudokuSquareId && !_.contains(this.conflicts, sudokuSquareId)) {
+		this.conflicts.push(sudokuSquareId);
+	}
 };
+
 SudokuSquare.prototype.removeConflict = function (sudokuSquareId) {
-  this.conflicts = _.difference(this.conflicts, [sudokuSquareId]);
+	this.conflicts = _.difference(this.conflicts, [sudokuSquareId]);
 };
 
 SudokuSquare.prototype.toggleClueMark = function (number) {
-  if (_.contains(this.clueMarks, number)) {
-    this.removeClueMark(number);
-  } else {
-    this.addClueMark(number);
-  }
+	if (_.contains(this.clueMarks, number)) {
+		this.removeClueMark(number);
+	} else {
+		this.addClueMark(number);
+	}
 };
+
 SudokuSquare.prototype.addClueMark = function (number) {
-  this.clueMarks.push(number);
-  this.arrangeClueMarks();
+	this.clueMarks.push(number);
+	this.arrangeClueMarks();
 };
+
 SudokuSquare.prototype.removeClueMark = function (number) {
-  this.clueMarks = _.difference(this.clueMarks, [number]);
-  this.arrangeClueMarks();
+	this.clueMarks = _.difference(this.clueMarks, [number]);
+	this.arrangeClueMarks();
 };
+
 SudokuSquare.prototype.arrangeClueMarks = function (gridSquare) {
-  var arrangedClueMarks = [];
-  for (var number = 1; number <= 9; number++) {
-    if (this.clueMarksContainsNumber(number)) {
-      arrangedClueMarks.push(number);
-    } else {
-      arrangedClueMarks.push(null);
-    }
-  }
-  this.clueMarks = arrangedClueMarks;
+	var arrangedClueMarks = [];
+	for (var number = 1; number <= 9; number++) {
+		if (this.clueMarksContainsNumber(number)) {
+			arrangedClueMarks.push(number);
+		} else {
+			arrangedClueMarks.push(null);
+		}
+	}
+	this.clueMarks = arrangedClueMarks;
 };
+
 SudokuSquare.prototype.clueMarksContainsNumber = function (number) {
-  return _.contains(this.clueMarks, number);
+	return _.contains(this.clueMarks, number);
+};
+
+SudokuSquare.prototype.clearClueMarks = function () {
+	this.clueMarks = [];
+	for (var _ = 1; _ <= 9; _++) {
+		this.clueMarks.push(null);
+	}
+};
+
+SudokuSquare.prototype.removeClueMarkFromAllRelationships = function (number) {
+	_.each(this.relationships, function (relationship) {
+		relationship.removeClueMark(number);
+	});
 };
 
 module.exports = SudokuSquare;
@@ -44901,7 +44948,7 @@ var applicationStore = assign({}, EventEmitter.prototype, {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 dispatcher.register(function (action) {
-  console.log(action.actionType);
+  //console.log(action.actionType);
   switch (action.actionType) {
 
     case actionTypes.INITIALIZE_APPLICATION:

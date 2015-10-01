@@ -11,13 +11,18 @@ var SudokuSquare = function (gridSquareData) {
   this.conflicts = [];
   this.clueMarks = [];
   this.sudokuGrid = null;
+
+  this.clearClueMarks();
 };
+
 SudokuSquare.prototype.value = function () {
 	return this.isStatic ? this.number : this.userInput;
 };
+
 SudokuSquare.prototype.hasConflicts = function () {
 	return this.conflicts.length > 0;
 };
+
 SudokuSquare.prototype.establishRelationships = function (sudokuGrid) {
 	this.sudokuGrid = sudokuGrid;
 	this.leftNeighbor = sudokuGrid.getSudokuSquareById(this.leftNeighbor);
@@ -28,30 +33,38 @@ SudokuSquare.prototype.establishRelationships = function (sudokuGrid) {
   	return sudokuGrid.getSudokuSquareById(relationship);
   });
 };
+
 SudokuSquare.prototype.setStatusToPassive = function () {
   this.state = gridSquareStates.PASSIVE;
 };
+
 SudokuSquare.prototype.setStatusToActive = function () {
   this.state = gridSquareStates.ACTIVE;
 };
+
 SudokuSquare.prototype.setStatusToRelatedToActive = function () {
   this.state = gridSquareStates.RELATED_TO_ACTIVE;
 };
+
 SudokuSquare.prototype.highlightAsActive = function () {
 	this.setStatusToActive();
 	_.each(this.relationships, function (relatedSquare) {
 		relatedSquare.setStatusToRelatedToActive();
 	});
 };
+
 SudokuSquare.prototype.setNumber = function(number) {
 	this.userInput = number;
 	this.updateConflicts();
+	this.clearClueMarks();
+	this.removeClueMarkFromAllRelationships(number);
 };
+
 SudokuSquare.prototype.updateConflicts = function() {
 	this.conflicts = [];
 	var sudokuSquare = this;
 	_.each(this.relationships, function (relationship) {
-		if (sudokuSquare.value() === relationship.value()) {
+		if (sudokuSquare.value() === relationship.value() && sudokuSquare.value() !== null) {
 			sudokuSquare.addConflict(relationship.id);
 			relationship.addConflict(sudokuSquare.id);
 		} else {
@@ -60,17 +73,16 @@ SudokuSquare.prototype.updateConflicts = function() {
 		}
 	});
 };
+
 SudokuSquare.prototype.addConflict = function (sudokuSquareId) {
 	if (sudokuSquareId !== null && this.id !== sudokuSquareId && !_.contains(this.conflicts, sudokuSquareId)) {
 		this.conflicts.push(sudokuSquareId);
 	}
 };
+
 SudokuSquare.prototype.removeConflict = function (sudokuSquareId) {
 	this.conflicts = _.difference(this.conflicts, [sudokuSquareId]);
 };
-
-
-
 
 SudokuSquare.prototype.toggleClueMark = function (number) {
 	if (_.contains(this.clueMarks, number)) {
@@ -79,14 +91,17 @@ SudokuSquare.prototype.toggleClueMark = function (number) {
     this.addClueMark(number);
   }
 };
+
 SudokuSquare.prototype.addClueMark = function (number) {
 	this.clueMarks.push(number);
   this.arrangeClueMarks();
 };
+
 SudokuSquare.prototype.removeClueMark = function (number) {
 	this.clueMarks = _.difference(this.clueMarks, [number]);
   this.arrangeClueMarks();
 };
+
 SudokuSquare.prototype.arrangeClueMarks = function (gridSquare) {
   var arrangedClueMarks = [];
   for (var number = 1; number <= 9; number++) {
@@ -98,12 +113,20 @@ SudokuSquare.prototype.arrangeClueMarks = function (gridSquare) {
   }
   this.clueMarks = arrangedClueMarks;
 };
+
 SudokuSquare.prototype.clueMarksContainsNumber = function (number) {
   return _.contains(this.clueMarks, number);
 };
 
+SudokuSquare.prototype.clearClueMarks = function () {
+	this.clueMarks = [];
+	for (var _ = 1; _ <= 9; _++) { this.clueMarks.push(null); }
+};
 
-
-
+SudokuSquare.prototype.removeClueMarkFromAllRelationships = function (number) {
+	_.each(this.relationships, function (relationship) {
+		relationship.removeClueMark(number);
+	});
+};
 
 module.exports = SudokuSquare;
