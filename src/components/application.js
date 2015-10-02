@@ -7,29 +7,36 @@ var applicationStore = require('../stores/applicationStore');
 var GridSquare = require('./gridSquare');
 
 var Application = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     return applicationStore.getData();
   },
-  componentDidMount: function() {
+  componentDidMount: function () {
     applicationStore.addChangeListener(this.updateState);
     applicationActions.initializeApplication();
     globalActions.registerGlobalEventHandlers();
   },
-  updateState: function() {
+  updateState: function () {
     this.setState(applicationStore.getData());
   },
-  render: function() {
+  content: function () {
+    if (this.state.sudokuGrid) {
+      return (
+        <div className="application-component">
+          {this.state.sudokuGrid.gridSquares.map(function(sudokuSquare, index) {
+            return (
+              <GridSquare key={index} squareData={sudokuSquare} />
+            );
+          })}
+          <div className="clear"></div>
+        </div>
+      );
+    } else {
+      return (<div></div>);
+    }
+  },
+  render: function () {
     console.log(this.state);
-    return (
-      <div className="application-component">
-        {this.state.sudokuGrid.gridSquares.map(function(sudokuSquare, index) {
-          return (
-            <GridSquare key={index} squareData={sudokuSquare} />
-          );
-        })}
-        <div className="clear"></div>
-      </div>
-    );
+    return this.content();
   }
 });
 
