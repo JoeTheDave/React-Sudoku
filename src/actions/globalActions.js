@@ -24,7 +24,13 @@ module.exports = {
 	        dispatcher.dispatch({ actionType: actionTypes.CLEAR_SELECTION });
 	        break;
 	      case 32: //space
-	        dispatcher.dispatch({ actionType: actionTypes.CLEAR_NUMBER });
+	        if (event.shiftKey) {
+	        	dispatcher.dispatch({ actionType: actionTypes.CLEAR_CLUE_MARKS_FOR_SELECTED_GRID_SQUARE });
+	        } else if (event.ctrlKey) {
+				  	dispatcher.dispatch({ actionType: actionTypes.CLEAR_ALL_CLUE_MARKS });      	
+	        } else {
+	        	dispatcher.dispatch({ actionType: actionTypes.CLEAR_NUMBER });
+	        }
 	        break;
 	      case 49: //1
 	      case 97:
@@ -98,6 +104,14 @@ module.exports = {
 	      		dispatcher.dispatch({ actionType: actionTypes.INSERT_NUMBER, number: 9 });
 	      	}
 	        break;
+      	case 191:
+      		if (event.shiftKey) {
+      			dispatcher.dispatch({ actionType: actionTypes.TOGGLE_ACTIVE_MARKS_MODE });
+      		}
+      		if (event.ctrlKey) {
+      			dispatcher.dispatch({ actionType: actionTypes.SHOW_ANSWERS });
+      		}
+      		break;
 	      default:
 	        //console.log(event.keyCode);
 	        break;

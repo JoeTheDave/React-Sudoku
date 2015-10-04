@@ -15,8 +15,11 @@ module.exports = {
     CLEAR_NUMBER: null,
     INSERT_NUMBER: null,
     INSERT_CLUE: null,
-
-    SELECT_GRID_SQUARE: null
+    TOGGLE_ACTIVE_MARKS_MODE: null,
+    SELECT_GRID_SQUARE: null,
+    SHOW_ANSWERS: null,
+    CLEAR_ALL_CLUE_MARKS: null,
+    CLEAR_CLUE_MARKS_FOR_SELECTED_GRID_SQUARE: null
   }),
   changeEvent: 'change',
   gridSquareStates: keymirror({

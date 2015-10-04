@@ -37,9 +37,36 @@
 
 .application-component {
 	width: 467px;
-  margin: 100px auto;
+  margin: 100px auto 20px auto;
   border-left: solid 1px #CCCCCC;
   border-bottom: solid 1px #CCCCCC;
+
+  &.active-marks-mode {
+    .grid-square {
+      .clue-marks {
+        .clue-mark {
+          color: #FF0000;
+        }
+      }
+    }
+  }
+
+  &.show-answers {
+    .grid-square {
+      .actual-square-value {
+        display: block;
+      }
+    }
+  }
+
+  &.puzzle-complete {
+    .grid-square {
+      .number {
+        color: #00AA00;
+      }
+    }
+  }
+
 }
 
 // grid-square ////////////////////////////////////////////////////////////////////////////////////
@@ -53,6 +80,7 @@
   cursor: pointer;
   border-top: solid 1px #CCCCCC;
   border-right: solid 1px #CCCCCC;
+  position: relative;
   @include no-user-select();
 
   &.top-border {
@@ -79,6 +107,15 @@
     @include text-glow(0px, 15px, rgba(255, 0, 0, 0.5));
   }
 
+  .actual-square-value {
+    position: absolute;
+    top: 0px;
+    left: 14px;
+    font-size: 6px;
+    color: #00AA00;
+    display: none;
+  }
+
 }
 
 // number /////////////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +133,7 @@
 
 }
 
-// clue-marks /////////////////////////////////////////////////////////////////////////////////////////
+// clue-marks /////////////////////////////////////////////////////////////////////////////////////
 
 .clue-marks {
 
@@ -111,6 +148,13 @@
   }
 }
 
+// other /////////////////////////////////////////////////////////////////////////////////////
+
+.instructions {
+  font-size: 10px;
+  color: #999999;
+  text-align: center;
+}
 
 
 

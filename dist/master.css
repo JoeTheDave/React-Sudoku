@@ -3,9 +3,15 @@
 
 .application-component {
   width: 467px;
-  margin: 100px auto;
+  margin: 100px auto 20px auto;
   border-left: solid 1px #CCCCCC;
   border-bottom: solid 1px #CCCCCC; }
+  .application-component.active-marks-mode .grid-square .clue-marks .clue-mark {
+    color: #FF0000; }
+  .application-component.show-answers .grid-square .actual-square-value {
+    display: block; }
+  .application-component.puzzle-complete .grid-square .number {
+    color: #00AA00; }
 
 .grid-square {
   float: left;
@@ -15,6 +21,7 @@
   cursor: pointer;
   border-top: solid 1px #CCCCCC;
   border-right: solid 1px #CCCCCC;
+  position: relative;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -31,6 +38,13 @@
     background-color: #DDDDDD; }
   .grid-square.is-conflicted {
     text-shadow: 0px 0px 15px rgba(255, 0, 0, 0.5), 0px 0px 15px rgba(255, 0, 0, 0.5), 0px 0px 15px rgba(255, 0, 0, 0.5), 0px 0px 15px rgba(255, 0, 0, 0.5); }
+  .grid-square .actual-square-value {
+    position: absolute;
+    top: 0px;
+    left: 14px;
+    font-size: 6px;
+    color: #00AA00;
+    display: none; }
 
 .number {
   font-weight: bold;
@@ -48,4 +62,9 @@
   height: 12px;
   padding: 2px;
   font-size: 11px;
+  text-align: center; }
+
+.instructions {
+  font-size: 10px;
+  color: #999999;
   text-align: center; }

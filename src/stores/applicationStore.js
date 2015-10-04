@@ -29,7 +29,6 @@ var applicationStore = assign({}, EventEmitter.prototype, {
 });
 
 dispatcher.register(function (action) {
-  //console.log(action.actionType);
   switch (action.actionType) {
 
     case actionTypes.INITIALIZE_APPLICATION:
@@ -79,6 +78,12 @@ dispatcher.register(function (action) {
       applicationStore.emitChange();
       break;
 
+
+    case actionTypes.CLEAR_CLUE_MARKS_FOR_SELECTED_GRID_SQUARE:
+      applicationData.sudokuGrid.clearClueMarksFromSelectedGridSquare();
+      applicationStore.emitChange();
+      break;
+
     case actionTypes.INSERT_CLUE:
       applicationData.sudokuGrid.toggleClueMarkOnSelectedGridSquare(action.number);
       applicationStore.emitChange();
@@ -86,6 +91,21 @@ dispatcher.register(function (action) {
 
     case actionTypes.INSERT_NUMBER:
       applicationData.sudokuGrid.assignNumberToSelectedGridSquare(action.number);
+      applicationStore.emitChange();
+      break;
+
+    case actionTypes.TOGGLE_ACTIVE_MARKS_MODE:
+      applicationData.sudokuGrid.toggleActiveMarksMode();
+      applicationStore.emitChange();
+      break;
+
+    case actionTypes.CLEAR_ALL_CLUE_MARKS:
+      applicationData.sudokuGrid.clearAllClueMarks();
+      applicationStore.emitChange();
+      break;
+
+    case actionTypes.SHOW_ANSWERS:
+      applicationData.sudokuGrid.toggleShowAnswersMode();
       applicationStore.emitChange();
       break;
   }

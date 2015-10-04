@@ -40,6 +40,7 @@ var GridSquare = React.createClass({
   render: function () {
     return (
       <div className={this.composeClass()} onClick={this.gridSquareSelected}>
+        <div className="actual-square-value">{this.props.squareData.number}</div>
         {this.content()}
       </div>
     );

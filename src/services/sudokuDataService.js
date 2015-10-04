@@ -14,6 +14,7 @@ var generatePuzzleData = function () {
 var SudokuData = function () {
 	this.grid = [];
 };
+
 SudokuData.prototype.generate = function () {
 	this.createGridSquares();
 	this.establishRelationships();
@@ -21,11 +22,13 @@ SudokuData.prototype.generate = function () {
 	this.populate();
   this.simplifyRelatedObjectsToIdReferences();
 };
+
 SudokuData.prototype.createGridSquares = function () {
 	for (var id = 0; id <= 80; id++) {
     this.grid.push(new GridSquare(id))
   }
 };
+
 SudokuData.prototype.establishRelationships = function () {
 	var self = this;
   _.each(this.grid, function (gridSquare) {
@@ -39,6 +42,7 @@ SudokuData.prototype.establishRelationships = function () {
     }
   });
 };
+
 SudokuData.prototype.establishDirectNeighborRelationships = function () {
   var self = this;
   _.each(this.grid, function (gridSquare) {
@@ -64,6 +68,7 @@ SudokuData.prototype.establishDirectNeighborRelationships = function () {
     }
   });
 };
+
 SudokuData.prototype.populate = function () {
 	var populationCycles = 0;
 	while(this.hasUnpopulatedGridSquares()) {
@@ -76,19 +81,23 @@ SudokuData.prototype.populate = function () {
 		}
 	}
 };
+
 SudokuData.prototype.findGridSquareById = function (id) {
   return _.find(this.grid, function (gridSquare) {
     return gridSquare.id === id;
   });
 };
+
 SudokuData.prototype.hasUnpopulatedGridSquares = function () {
 	return this.getUndefinedGridSquares().length !== 0;
 };
+
 SudokuData.prototype.getUndefinedGridSquares = function () {
 	return _.filter(this.grid, function (gridSquare) {
     return gridSquare.number === null;
   });
 };
+
 SudokuData.prototype.getRandomUndefinedGridSquare = function () {
   var undefinedGridSquares = this.getUndefinedGridSquares();
   if (undefinedGridSquares.length > 0) {
@@ -97,6 +106,7 @@ SudokuData.prototype.getRandomUndefinedGridSquare = function () {
   }
   return null;
 };
+
 SudokuData.prototype.clearRandomGridSquares = function (numberToClear) {
 	var populatedGridSquares = _.difference(this.grid, this.getUndefinedGridSquares());
 	var gridSquaresToClear = _.take(_.shuffle(populatedGridSquares), numberToClear);
@@ -104,6 +114,7 @@ SudokuData.prototype.clearRandomGridSquares = function (numberToClear) {
     gridSquare.number = null;
   });
 };
+
 SudokuData.prototype.simplifyRelatedObjectsToIdReferences = function () {
   _.each(this.grid, function (gridSquare) {
     gridSquare.leftNeighbor = gridSquare.leftNeighbor.id;
@@ -123,14 +134,17 @@ var GridSquare = function(id) {
   this.lowerNeighbor = null;
   this.leftNeighbor = null;
 };
+
 GridSquare.prototype.establishRelationship = function (relatedGridSquare) {
 	if((!this.alreadyHasRelationship(relatedGridSquare)) && this.id !== relatedGridSquare.id) {
     this.relationships.push(relatedGridSquare);
   }
 };
+
 GridSquare.prototype.alreadyHasRelationship = function (relatedGridSquare) {
 	return _.contains(this.relationships, relatedGridSquare);
 };
+
 GridSquare.prototype.populate = function () {
 	var sequence = this.generateRandomSequence();
   while (this.number === null && sequence.length > 0) {
@@ -143,22 +157,27 @@ GridSquare.prototype.populate = function () {
   	this.forcePopulate();
   }
 };
+
 GridSquare.prototype.generateRandomSequence = function () {
   return _.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
 };
+
 GridSquare.prototype.isValidNumber = function (number) {
   return this.calculateCandidateConflicts(number) === 0;
 };
+
 GridSquare.prototype.calculateCandidateConflicts = function (number) {
   return _.filter(this.relationships, function (relatedGridSquare) {
     return relatedGridSquare.number === number;
   }).length;
 };
+
 GridSquare.prototype.forcePopulate = function () {
 	var number = this.findNumberWithFewestConflicts();
   this.elmininateConflictsForNumber(number);
   this.number = number;
 };
+
 GridSquare.prototype.elmininateConflictsForNumber = function (number) {
   _.each(this.relationships, function (relatedGridSquare) {
     if (relatedGridSquare.number === number) {
@@ -166,6 +185,7 @@ GridSquare.prototype.elmininateConflictsForNumber = function (number) {
     }
   });
 };
+
 GridSquare.prototype.findNumberWithFewestConflicts = function () {
 	var self = this;
   var conflictSummary = [];

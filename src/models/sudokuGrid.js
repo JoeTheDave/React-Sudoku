@@ -7,6 +7,9 @@ var SudokuGrid = function (sudokuPuzzleData) {
 	this.gridSquares = [];
 	this.selectedGridSquare = null;
 	this.initialize(sudokuPuzzleData);
+	this.activeMarksMode = false;
+	this.showAnswers = false;
+	this.puzzleIsComplete = false;
 };
 
 SudokuGrid.prototype.initialize = function (sudokuPuzzleData) {
@@ -86,11 +89,54 @@ SudokuGrid.prototype.setAllGridSquaresPassive = function () {
 SudokuGrid.prototype.assignNumberToSelectedGridSquare = function (number) {
 	if (this.selectedGridSquare && !this.selectedGridSquare.isStatic) {
 		this.selectedGridSquare.setNumber(number);
+		this.checkForPuzzleCompletion();
 	}
 };
 
 SudokuGrid.prototype.toggleClueMarkOnSelectedGridSquare = function (number) {
-	this.selectedGridSquare.toggleClueMark(number);
+	if (this.selectedGridSquare && !this.activeMarksMode) {
+		this.selectedGridSquare.toggleClueMark(number);
+	}
+};
+
+SudokuGrid.prototype.toggleActiveMarksMode = function () {
+	this.activeMarksMode = !this.activeMarksMode;
+	if (this.activeMarksMode) {
+		this.updateClueMarksForAllGridSquares();
+	}
+};
+
+SudokuGrid.prototype.updateClueMarksForAllGridSquares = function () {
+	_.each(this.gridSquares, function (sudokuSquare) {
+		if (!sudokuSquare.isStatic) {
+			sudokuSquare.updatePossibleClueMarks();
+		}
+	});
+};
+
+SudokuGrid.prototype.toggleShowAnswersMode = function () {
+	this.showAnswers = !this.showAnswers;
+};
+
+SudokuGrid.prototype.clearClueMarksFromSelectedGridSquare = function () {
+	if (this.selectedGridSquare && !this.activeMarksMode) {
+		this.selectedGridSquare.clearClueMarks();
+	}
+};
+
+SudokuGrid.prototype.clearAllClueMarks = function () {
+	if (!this.activeMarksMode)
+	{
+		_.each(this.gridSquares, function (sudokuSquare) {
+			sudokuSquare.clearClueMarks();
+		});
+	}
+};
+
+SudokuGrid.prototype.checkForPuzzleCompletion = function () {
+	this.puzzleIsComplete = _.every(this.gridSquares, function (sudokuSquare) {
+		return sudokuSquare.value() === sudokuSquare.number;
+	});
 };
 
 module.exports = SudokuGrid;

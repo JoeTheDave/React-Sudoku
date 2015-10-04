@@ -57,7 +57,10 @@ SudokuSquare.prototype.setNumber = function(number) {
 	this.userInput = number;
 	this.updateConflicts();
 	this.clearClueMarks();
-	this.removeClueMarkFromAllRelationships(number);
+	if (this.sudokuGrid.activeMarksMode) {
+		this.updatePossibleClueMarks();
+		this.updatePossibleClueMarksForAllRelationships();
+	}
 };
 
 SudokuSquare.prototype.updateConflicts = function() {
@@ -126,6 +129,21 @@ SudokuSquare.prototype.clearClueMarks = function () {
 SudokuSquare.prototype.removeClueMarkFromAllRelationships = function (number) {
 	_.each(this.relationships, function (relationship) {
 		relationship.removeClueMark(number);
+	});
+};
+
+SudokuSquare.prototype.updatePossibleClueMarks = function () {
+	var relationshipValues = _.map(this.relationships, function (relationship) {
+		return relationship.value();
+	});
+	var relevantRelationshipValues = _.compact(relationshipValues);
+	var possibleClueMarks = _.difference([1, 2, 3, 4, 5, 6, 7, 8, 9], relevantRelationshipValues);
+	this.clueMarks = possibleClueMarks;
+	this.arrangeClueMarks();
+};
+SudokuSquare.prototype.updatePossibleClueMarksForAllRelationships = function () {
+	_.each(this.relationships, function (relationship) {
+		relationship.updatePossibleClueMarks();
 	});
 };
 

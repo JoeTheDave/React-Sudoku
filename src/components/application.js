@@ -20,8 +20,12 @@ var Application = React.createClass({
   },
   content: function () {
     if (this.state.sudokuGrid) {
+      var componentClass = 'application-component' +
+        (this.state.sudokuGrid.activeMarksMode ? ' active-marks-mode' : '') +
+        (this.state.sudokuGrid.showAnswers ? ' show-answers' : '') + 
+        (this.state.sudokuGrid.puzzleIsComplete ? ' puzzle-complete' : '');
       return (
-        <div className="application-component">
+        <div className={componentClass}>
           {this.state.sudokuGrid.gridSquares.map(function(sudokuSquare, index) {
             return (
               <GridSquare key={index} squareData={sudokuSquare} />
@@ -35,7 +39,6 @@ var Application = React.createClass({
     }
   },
   render: function () {
-    console.log(this.state);
     return this.content();
   }
 });
