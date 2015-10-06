@@ -78,7 +78,6 @@ dispatcher.register(function (action) {
       applicationStore.emitChange();
       break;
 
-
     case actionTypes.CLEAR_CLUE_MARKS_FOR_SELECTED_GRID_SQUARE:
       applicationData.sudokuGrid.clearClueMarksFromSelectedGridSquare();
       applicationStore.emitChange();
