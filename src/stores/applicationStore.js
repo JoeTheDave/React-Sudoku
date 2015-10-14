@@ -1,19 +1,19 @@
 'use strict';
 
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
-var _ = require('lodash');
-var actionTypes = require('../flux/constants').actionTypes;
-var CHANGE_EVENT = require('../flux/constants').changeEvent;
-var gridSquareStates = require('../flux/constants').gridSquareStates;
-var dispatcher = require('../flux/dispatcher');
-var applicationActions = require('../actions/applicationActions');
-var sudokuDataService = require('../services/SudokuDataService');
-var SudokuGrid = require('../models/sudokuGrid');
+let EventEmitter = require('events').EventEmitter;
+let assign = require('object-assign');
+let _ = require('lodash');
+let actionTypes = require('../flux/constants').actionTypes;
+let CHANGE_EVENT = require('../flux/constants').changeEvent;
+let gridSquareStates = require('../flux/constants').gridSquareStates;
+let dispatcher = require('../flux/dispatcher');
+let applicationActions = require('../actions/applicationActions');
+let sudokuDataService = require('../services/SudokuDataService');
+let SudokuGrid = require('../models/sudokuGrid');
 
-var applicationData = {};
+let applicationData = {};
 
-var applicationStore = assign({}, EventEmitter.prototype, {
+let applicationStore = assign({}, EventEmitter.prototype, {
   getData: function () {
     return applicationData;
   },
@@ -110,4 +110,4 @@ dispatcher.register(function (action) {
   }
 });
 
-module.exports = applicationStore;
+export default applicationStore;

@@ -1,24 +1,24 @@
 'use strict';
 
-var dispatcher = require('../flux/dispatcher');
-var actionTypes = require('../flux/constants').actionTypes;
+import dispatcher from '../flux/dispatcher';
+import { actionTypes } from '../flux/constants';
 
-module.exports = {
+export default {
 
-	initializeApplication: function () {
+	initializeApplication () {
     dispatcher.dispatch({
       actionType: actionTypes.INITIALIZE_APPLICATION
     });
 	},
 
-  initializeSudokuData: function (sudokuData) {
+  initializeSudokuData (sudokuData) {
     dispatcher.dispatch({
       actionType: actionTypes.INITIALIZE_SUDOKU_DATA,
       sudokuData: sudokuData
     });
   },
 
-	gridSquareSelected: function (gridSquare) {
+	gridSquareSelected (gridSquare) {
     dispatcher.dispatch({
       actionType: actionTypes.SELECT_GRID_SQUARE,
       gridSquare: gridSquare

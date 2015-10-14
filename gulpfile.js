@@ -25,8 +25,8 @@ gulp.task('clean', function() {
 //Browserify
 gulp.task('browserify', function() {
   browserify(config.browserifyEntry)
-    .transform(reactify)
     .transform(babelify)
+    .transform(reactify)
     .bundle()
     .on('error', console.error.bind(console))
     .pipe(source(config.sourceFileName))
@@ -50,3 +50,15 @@ gulp.task('watch', function () {
 
 //Default
 gulp.task('default', ['clean', 'sass', 'browserify', 'watch']);
+
+//Setup Production Environment
+gulp.task('setup-prod-environment', function () {
+    process.stdout.write( "Setting NODE_ENV to 'production'" + "\n" );
+    process.env.NODE_ENV = 'production';
+    if (process.env.NODE_ENV != 'production') {
+        throw new Error( "Failed to set NODE_ENV to production!!!!" );
+    }
+});
+
+//Production Build
+gulp.task('prod', ['setup-prod-environment', 'clean', 'sass', 'browserify']);

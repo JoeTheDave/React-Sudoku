@@ -1,14 +1,14 @@
 'use strict';
 
-var React = require('react');
+import React from 'react';
 
-var Number = React.createClass({
+let Number = React.createClass({
   propTypes: {
     number: React.PropTypes.number.isRequired,
     isStatic: React.PropTypes.bool.isRequired
   },
   composeClass: function () {
-    var className = 'number';
+    let className = 'number';
     if (this.props.isStatic) {
       className += ' is-static';
     }
@@ -23,4 +23,4 @@ var Number = React.createClass({
   }
 });
 
-module.exports = Number;
+export default Number;

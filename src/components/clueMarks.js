@@ -1,17 +1,16 @@
 'use strict';
 
-var React = require('react');
-var _ = require('lodash')
+import React from 'react';
+import _ from 'lodash';
 
-var ClueMarks = React.createClass({
+let ClueMarks = React.createClass({
   propTypes: {
     marks: React.PropTypes.array.isRequired
   },
   render: function () {
-    var self = this;
     return (
       <div className="clue-marks">
-        {this.props.marks.map(function(mark, index) {
+        {this.props.marks.map((mark, index) => {
           return (
             <div className="clue-mark" key={index}>{mark}</div>
           );
@@ -21,4 +20,4 @@ var ClueMarks = React.createClass({
   }
 });
 
-module.exports = ClueMarks;
+export default ClueMarks;

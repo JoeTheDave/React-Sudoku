@@ -1,12 +1,12 @@
 'use strict';
 
-var React = require('react');
-var applicationActions = require('../actions/applicationActions');
-var gridSquareStates = require('../flux/constants').gridSquareStates;
-var Number = require('./number');
-var ClueMarks = require('./clueMarks');
+import React from 'react';
+import applicationActions from '../actions/applicationActions';
+import { gridSquareStates } from '../flux/constants';
+import Number from './number';
+import ClueMarks from './clueMarks';
 
-var GridSquare = React.createClass({
+let GridSquare = React.createClass({
   propTypes: {
     squareData: React.PropTypes.object.isRequired
   },
@@ -14,8 +14,8 @@ var GridSquare = React.createClass({
     return state.split('_').join('-').toLowerCase();
   },
   composeClass: function () {
-    var id = this.props.squareData.id;
-    var className = 'grid-square ' + this.convertStateToClassName(this.props.squareData.state);
+    let id = this.props.squareData.id;
+    let className = 'grid-square ' + this.convertStateToClassName(this.props.squareData.state);
     if (this.props.squareData.hasConflicts()) {
       className += ' is-conflicted';
     }
@@ -47,4 +47,4 @@ var GridSquare = React.createClass({
   }
 });
 
-module.exports = GridSquare;
+export default GridSquare;

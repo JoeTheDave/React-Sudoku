@@ -1,150 +1,152 @@
 'use strict';
 
-var _ = require('lodash');
-var gridSquareStates = require('../flux/constants').gridSquareStates;
+let _ = require('lodash');
+let gridSquareStates = require('../flux/constants').gridSquareStates;
 
-var SudokuSquare = function (gridSquareData) {
-	_.extend(this, gridSquareData);
-	this.state = gridSquareStates.PASSIVE;
-  this.isStatic = true;
-  this.userInput = null;
-  this.conflicts = [];
-  this.clueMarks = [];
-  this.sudokuGrid = null;
+class SudokuSquare {
+	constructor (gridSquareData) {
+		_.extend(this, gridSquareData);
+		this.state = gridSquareStates.PASSIVE;
+	  this.isStatic = true;
+	  this.userInput = null;
+	  this.conflicts = [];
+	  this.clueMarks = [];
+	  this.sudokuGrid = null;
 
-  this.clearClueMarks();
-};
-
-SudokuSquare.prototype.value = function () {
-	return this.isStatic ? this.number : this.userInput;
-};
-
-SudokuSquare.prototype.hasConflicts = function () {
-	return this.conflicts.length > 0;
-};
-
-SudokuSquare.prototype.establishRelationships = function (sudokuGrid) {
-	this.sudokuGrid = sudokuGrid;
-	this.leftNeighbor = sudokuGrid.getSudokuSquareById(this.leftNeighbor);
-  this.upperNeighbor = sudokuGrid.getSudokuSquareById(this.upperNeighbor);
-  this.rightNeighbor = sudokuGrid.getSudokuSquareById(this.rightNeighbor);
-  this.lowerNeighbor = sudokuGrid.getSudokuSquareById(this.lowerNeighbor);
-  this.relationships = _.map(this.relationships, function (relationship) {
-  	return sudokuGrid.getSudokuSquareById(relationship);
-  });
-};
-
-SudokuSquare.prototype.setStatusToPassive = function () {
-  this.state = gridSquareStates.PASSIVE;
-};
-
-SudokuSquare.prototype.setStatusToActive = function () {
-  this.state = gridSquareStates.ACTIVE;
-};
-
-SudokuSquare.prototype.setStatusToRelatedToActive = function () {
-  this.state = gridSquareStates.RELATED_TO_ACTIVE;
-};
-
-SudokuSquare.prototype.highlightAsActive = function () {
-	this.setStatusToActive();
-	_.each(this.relationships, function (relatedSquare) {
-		relatedSquare.setStatusToRelatedToActive();
-	});
-};
-
-SudokuSquare.prototype.setNumber = function(number) {
-	this.userInput = number;
-	this.updateConflicts();
-	this.clearClueMarks();
-	if (this.sudokuGrid.activeMarksMode) {
-		this.updatePossibleClueMarks();
-		this.updatePossibleClueMarksForAllRelationships();
+	  this.clearClueMarks();
 	}
-};
 
-SudokuSquare.prototype.updateConflicts = function() {
-	this.conflicts = [];
-	var sudokuSquare = this;
-	_.each(this.relationships, function (relationship) {
-		if (sudokuSquare.value() === relationship.value() && sudokuSquare.value() !== null) {
-			sudokuSquare.addConflict(relationship.id);
-			relationship.addConflict(sudokuSquare.id);
-		} else {
-			sudokuSquare.removeConflict(relationship.id);
-			relationship.removeConflict(sudokuSquare.id);
+	value () {
+		return this.isStatic ? this.number : this.userInput;
+	};
+
+	hasConflicts () {
+		return this.conflicts.length > 0;
+	};
+
+	establishRelationships (sudokuGrid) {
+		this.sudokuGrid = sudokuGrid;
+		this.leftNeighbor = sudokuGrid.getSudokuSquareById(this.leftNeighbor);
+	  this.upperNeighbor = sudokuGrid.getSudokuSquareById(this.upperNeighbor);
+	  this.rightNeighbor = sudokuGrid.getSudokuSquareById(this.rightNeighbor);
+	  this.lowerNeighbor = sudokuGrid.getSudokuSquareById(this.lowerNeighbor);
+	  this.relationships = _.map(this.relationships, (relationship) => {
+	  	return sudokuGrid.getSudokuSquareById(relationship);
+	  });
+	};
+
+	setStatusToPassive () {
+	  this.state = gridSquareStates.PASSIVE;
+	};
+
+	setStatusToActive () {
+	  this.state = gridSquareStates.ACTIVE;
+	};
+
+	setStatusToRelatedToActive () {
+	  this.state = gridSquareStates.RELATED_TO_ACTIVE;
+	};
+
+	highlightAsActive () {
+		this.setStatusToActive();
+		_.each(this.relationships, (relatedSquare) => {
+			relatedSquare.setStatusToRelatedToActive();
+		});
+	};
+
+	setNumber (number) {
+		this.userInput = number;
+		this.updateConflicts();
+		this.clearClueMarks();
+		if (this.sudokuGrid.activeMarksMode) {
+			this.updatePossibleClueMarks();
+			this.updatePossibleClueMarksForAllRelationships();
 		}
-	});
-};
+	};
 
-SudokuSquare.prototype.addConflict = function (sudokuSquareId) {
-	if (sudokuSquareId !== null && this.id !== sudokuSquareId && !_.contains(this.conflicts, sudokuSquareId)) {
-		this.conflicts.push(sudokuSquareId);
-	}
-};
+	updateConflicts () {
+		this.conflicts = [];
+		_.each(this.relationships, (relationship) => {
+			if (this.value() === relationship.value() && this.value() !== null) {
+				this.addConflict(relationship.id);
+				relationship.addConflict(this.id);
+			} else {
+				this.removeConflict(relationship.id);
+				relationship.removeConflict(this.id);
+			}
+		});
+	};
 
-SudokuSquare.prototype.removeConflict = function (sudokuSquareId) {
-	this.conflicts = _.difference(this.conflicts, [sudokuSquareId]);
-};
+	addConflict (sudokuSquareId) {
+		if (sudokuSquareId !== null && this.id !== sudokuSquareId && !_.contains(this.conflicts, sudokuSquareId)) {
+			this.conflicts.push(sudokuSquareId);
+		}
+	};
 
-SudokuSquare.prototype.toggleClueMark = function (number) {
-	if (_.contains(this.clueMarks, number)) {
-    this.removeClueMark(number);
-  } else {
-    this.addClueMark(number);
-  }
-};
+	removeConflict (sudokuSquareId) {
+		this.conflicts = _.difference(this.conflicts, [sudokuSquareId]);
+	};
 
-SudokuSquare.prototype.addClueMark = function (number) {
-	this.clueMarks.push(number);
-  this.arrangeClueMarks();
-};
+	toggleClueMark (number) {
+		if (_.contains(this.clueMarks, number)) {
+	    this.removeClueMark(number);
+	  } else {
+	    this.addClueMark(number);
+	  }
+	};
 
-SudokuSquare.prototype.removeClueMark = function (number) {
-	this.clueMarks = _.difference(this.clueMarks, [number]);
-  this.arrangeClueMarks();
-};
+	addClueMark (number) {
+		this.clueMarks.push(number);
+	  this.arrangeClueMarks();
+	};
 
-SudokuSquare.prototype.arrangeClueMarks = function (gridSquare) {
-  var arrangedClueMarks = [];
-  for (var number = 1; number <= 9; number++) {
-    if (this.clueMarksContainsNumber(number)) {
-      arrangedClueMarks.push(number);
-    } else {
-      arrangedClueMarks.push(null);
-    }
-  }
-  this.clueMarks = arrangedClueMarks;
-};
+	removeClueMark (number) {
+		this.clueMarks = _.difference(this.clueMarks, [number]);
+	  this.arrangeClueMarks();
+	};
 
-SudokuSquare.prototype.clueMarksContainsNumber = function (number) {
-  return _.contains(this.clueMarks, number);
-};
+	arrangeClueMarks (gridSquare) {
+	  let arrangedClueMarks = [];
+	  for (let number = 1; number <= 9; number++) {
+	    if (this.clueMarksContainsNumber(number)) {
+	      arrangedClueMarks.push(number);
+	    } else {
+	      arrangedClueMarks.push(null);
+	    }
+	  }
+	  this.clueMarks = arrangedClueMarks;
+	};
 
-SudokuSquare.prototype.clearClueMarks = function () {
-	this.clueMarks = [];
-	for (var _ = 1; _ <= 9; _++) { this.clueMarks.push(null); }
-};
+	clueMarksContainsNumber (number) {
+	  return _.contains(this.clueMarks, number);
+	};
 
-SudokuSquare.prototype.removeClueMarkFromAllRelationships = function (number) {
-	_.each(this.relationships, function (relationship) {
-		relationship.removeClueMark(number);
-	});
-};
+	clearClueMarks () {
+		this.clueMarks = [];
+		for (let _ = 1; _ <= 9; _++) { this.clueMarks.push(null); }
+	};
 
-SudokuSquare.prototype.updatePossibleClueMarks = function () {
-	var relationshipValues = _.map(this.relationships, function (relationship) {
-		return relationship.value();
-	});
-	var relevantRelationshipValues = _.compact(relationshipValues);
-	var possibleClueMarks = _.difference([1, 2, 3, 4, 5, 6, 7, 8, 9], relevantRelationshipValues);
-	this.clueMarks = possibleClueMarks;
-	this.arrangeClueMarks();
-};
-SudokuSquare.prototype.updatePossibleClueMarksForAllRelationships = function () {
-	_.each(this.relationships, function (relationship) {
-		relationship.updatePossibleClueMarks();
-	});
+	removeClueMarkFromAllRelationships (number) {
+		_.each(this.relationships, (relationship) => {
+			relationship.removeClueMark(number);
+		});
+	};
+
+	updatePossibleClueMarks () {
+		let relationshipValues = _.map(this.relationships, (relationship) => {
+			return relationship.value();
+		});
+		let relevantRelationshipValues = _.compact(relationshipValues);
+		let possibleClueMarks = _.difference([1, 2, 3, 4, 5, 6, 7, 8, 9], relevantRelationshipValues);
+		this.clueMarks = possibleClueMarks;
+		this.arrangeClueMarks();
+	};
+	updatePossibleClueMarksForAllRelationships () {
+		_.each(this.relationships, (relationship) => {
+			relationship.updatePossibleClueMarks();
+		});
+	};
+	
 };
 
 module.exports = SudokuSquare;

@@ -1,12 +1,12 @@
 'use strict';
 
-var React = require('react');
-var applicationActions = require('../actions/applicationActions');
-var globalActions = require('../actions/globalActions')
-var applicationStore = require('../stores/applicationStore');
-var GridSquare = require('./gridSquare');
+import React from 'react';
+import applicationActions from '../actions/applicationActions';
+import globalActions from '../actions/globalActions';
+import applicationStore from '../stores/applicationStore';
+import GridSquare from './gridSquare';
 
-var Application = React.createClass({
+let Application = React.createClass({
   getInitialState: function () {
     return applicationStore.getData();
   },
@@ -20,13 +20,13 @@ var Application = React.createClass({
   },
   content: function () {
     if (this.state.sudokuGrid) {
-      var componentClass = 'application-component' +
+      let componentClass = 'application-component' +
         (this.state.sudokuGrid.activeMarksMode ? ' active-marks-mode' : '') +
         (this.state.sudokuGrid.showAnswers ? ' show-answers' : '') + 
         (this.state.sudokuGrid.puzzleIsComplete ? ' puzzle-complete' : '');
       return (
         <div className={componentClass}>
-          {this.state.sudokuGrid.gridSquares.map(function(sudokuSquare, index) {
+          {this.state.sudokuGrid.gridSquares.map((sudokuSquare, index) => {
             return (
               <GridSquare key={index} squareData={sudokuSquare} />
             );
@@ -43,4 +43,4 @@ var Application = React.createClass({
   }
 });
 
-module.exports = Application;
+export default Application;
