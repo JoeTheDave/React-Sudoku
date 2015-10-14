@@ -3,9 +3,9 @@
 import _ from 'lodash';
 import Q from 'q';
 
-var generatePuzzleData = function () {
-  var deferred = Q.defer();
-	var puzzleData = new SudokuData();
+let generatePuzzleData = function () {
+  let deferred = Q.defer();
+	let puzzleData = new SudokuData();
 	puzzleData.generate();
   deferred.resolve(puzzleData.grid);
 	return deferred.promise;
@@ -25,17 +25,17 @@ class SudokuData {
   }
 
   createGridSquares () {
-    for (var id = 0; id <= 80; id++) {
+    for (let id = 0; id <= 80; id++) {
       this.grid.push(new GridSquare(id))
     }
   }
 
   establishRelationships () {
     _.each(this.grid, (gridSquare) => {
-      var rowStartId = gridSquare.id - gridSquare.id % 9;
-      var colStartId = gridSquare.id % 9;
-      var grid3x3StartId = gridSquare.id - (gridSquare.id % 27) + (gridSquare.id % 9) - (gridSquare.id % 3);
-      for (var x = 0; x <= 8; x++) {
+      let rowStartId = gridSquare.id - gridSquare.id % 9;
+      let colStartId = gridSquare.id % 9;
+      let grid3x3StartId = gridSquare.id - (gridSquare.id % 27) + (gridSquare.id % 9) - (gridSquare.id % 3);
+      for (let x = 0; x <= 8; x++) {
         gridSquare.establishRelationship(this.findGridSquareById(rowStartId + x));
         gridSquare.establishRelationship(this.findGridSquareById(colStartId + (x * 9)));
         gridSquare.establishRelationship(this.findGridSquareById(grid3x3StartId + (x % 3) + (Math.floor(x / 3) * 9)));
@@ -69,9 +69,9 @@ class SudokuData {
   }
 
   populate () {
-    var populationCycles = 0;
+    let populationCycles = 0;
     while(this.hasUnpopulatedGridSquares()) {
-      var gridSquare = this.getRandomUndefinedGridSquare();
+      let gridSquare = this.getRandomUndefinedGridSquare();
       gridSquare.populate();
       populationCycles++;
       if (populationCycles >= 200) {
@@ -98,17 +98,17 @@ class SudokuData {
   }
 
   getRandomUndefinedGridSquare () {
-    var undefinedGridSquares = this.getUndefinedGridSquares();
+    let undefinedGridSquares = this.getUndefinedGridSquares();
     if (undefinedGridSquares.length > 0) {
-      var randomIndex = _.random(undefinedGridSquares.length - 1);
+      let randomIndex = _.random(undefinedGridSquares.length - 1);
       return undefinedGridSquares[randomIndex];
     }
     return null;
   }
 
   clearRandomGridSquares (numberToClear) {
-    var populatedGridSquares = _.difference(this.grid, this.getUndefinedGridSquares());
-    var gridSquaresToClear = _.take(_.shuffle(populatedGridSquares), numberToClear);
+    let populatedGridSquares = _.difference(this.grid, this.getUndefinedGridSquares());
+    let gridSquaresToClear = _.take(_.shuffle(populatedGridSquares), numberToClear);
     _.each(gridSquaresToClear, (gridSquare) => {
       gridSquare.number = null;
     });
@@ -148,9 +148,9 @@ class GridSquare {
   }
 
   populate () {
-    var sequence = this.generateRandomSequence();
+    let sequence = this.generateRandomSequence();
     while (this.number === null && sequence.length > 0) {
-      var candidate = sequence.pop();
+      let candidate = sequence.pop();
       if (this.isValidNumber(candidate)) {
         this.number = candidate;
       }
@@ -175,7 +175,7 @@ class GridSquare {
   }
 
   forcePopulate () {
-    var number = this.findNumberWithFewestConflicts();
+    let number = this.findNumberWithFewestConflicts();
     this.elmininateConflictsForNumber(number);
     this.number = number;
   }
@@ -189,14 +189,14 @@ class GridSquare {
   }
 
   findNumberWithFewestConflicts () {
-    var conflictSummary = [];
+    let conflictSummary = [];
     _.each(this.generateRandomSequence(), (number) => {
       conflictSummary.push({ number: number, conflicts: this.calculateCandidateConflicts(number) });
     });
-    var sortedConflictSummary = _.sortBy(conflictSummary, (conflictSummaryItem) => {
+    let sortedConflictSummary = _.sortBy(conflictSummary, (conflictSummaryItem) => {
       return conflictSummaryItem.conflicts;
     });
-    var test = _.first(sortedConflictSummary);
+    let test = _.first(sortedConflictSummary);
     return test.number;
   }
 	
