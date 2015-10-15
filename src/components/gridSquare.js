@@ -10,10 +10,6 @@ class GridSquare extends React.Component {
   constructor (props) {
     super(props);
     this.gridSquareSelected = this.gridSquareSelected.bind(this);
-
-    this.propTypes = {
-      squareData: React.PropTypes.object.isRequired
-    }
   }
 
   convertStateToClassName (state) {
@@ -57,5 +53,10 @@ class GridSquare extends React.Component {
   }
 
 };
+
+GridSquare.propTypes = {
+  squareData: React.PropTypes.object.isRequired
+};
+
 
 export default GridSquare;

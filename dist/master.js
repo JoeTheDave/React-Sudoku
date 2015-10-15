@@ -44190,7 +44190,6 @@ var Application = (function (_React$Component) {
     _classCallCheck(this, Application);
 
     _get(Object.getPrototypeOf(Application.prototype), 'constructor', this).call(this, props);
-
     this.state = _storesApplicationStore2['default'].getData();
     this.updateState = this.updateState.bind(this);
   }
@@ -44208,8 +44207,8 @@ var Application = (function (_React$Component) {
       this.setState(_storesApplicationStore2['default'].getData());
     }
   }, {
-    key: 'content',
-    value: function content() {
+    key: 'render',
+    value: function render() {
       if (this.state.sudokuGrid) {
         var componentClass = 'application-component' + (this.state.sudokuGrid.activeMarksMode ? ' active-marks-mode' : '') + (this.state.sudokuGrid.showAnswers ? ' show-answers' : '') + (this.state.sudokuGrid.puzzleIsComplete ? ' puzzle-complete' : '');
         return _react2['default'].createElement(
@@ -44223,11 +44222,6 @@ var Application = (function (_React$Component) {
       } else {
         return _react2['default'].createElement('div', null);
       }
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      return this.content();
     }
   }]);
 
@@ -44272,10 +44266,6 @@ var ClueMarks = (function (_React$Component) {
     _classCallCheck(this, ClueMarks);
 
     _get(Object.getPrototypeOf(ClueMarks.prototype), 'constructor', this).call(this, props);
-
-    this.propTypes = {
-      marks: _react2['default'].PropTypes.array.isRequired
-    };
   }
 
   _createClass(ClueMarks, [{
@@ -44299,6 +44289,10 @@ var ClueMarks = (function (_React$Component) {
 })(_react2['default'].Component);
 
 ;
+
+ClueMarks.propTypes = {
+  marks: _react2['default'].PropTypes.array.isRequired
+};
 
 exports['default'] = ClueMarks;
 module.exports = exports['default'];
@@ -44347,10 +44341,6 @@ var GridSquare = (function (_React$Component) {
 
     _get(Object.getPrototypeOf(GridSquare.prototype), 'constructor', this).call(this, props);
     this.gridSquareSelected = this.gridSquareSelected.bind(this);
-
-    this.propTypes = {
-      squareData: _react2['default'].PropTypes.object.isRequired
-    };
   }
 
   _createClass(GridSquare, [{
@@ -44409,6 +44399,10 @@ var GridSquare = (function (_React$Component) {
 
 ;
 
+GridSquare.propTypes = {
+  squareData: _react2['default'].PropTypes.object.isRequired
+};
+
 exports['default'] = GridSquare;
 module.exports = exports['default'];
 
@@ -44441,11 +44435,6 @@ var Number = (function (_React$Component) {
     _classCallCheck(this, Number);
 
     _get(Object.getPrototypeOf(Number.prototype), 'constructor', this).call(this, props);
-
-    this.propTypes = {
-      number: _react2['default'].PropTypes.number.isRequired,
-      isStatic: _react2['default'].PropTypes.bool.isRequired
-    };
   }
 
   _createClass(Number, [{
@@ -44472,6 +44461,11 @@ var Number = (function (_React$Component) {
 })(_react2['default'].Component);
 
 ;
+
+Number.propTypes = {
+  number: _react2['default'].PropTypes.number.isRequired,
+  isStatic: _react2['default'].PropTypes.bool.isRequired
+};
 
 exports['default'] = Number;
 module.exports = exports['default'];

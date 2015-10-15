@@ -5,11 +5,6 @@ import React from 'react';
 class Number extends React.Component {
   constructor (props) {
     super(props);
-
-    this.propTypes = {
-      number: React.PropTypes.number.isRequired,
-      isStatic: React.PropTypes.bool.isRequired
-    }
   }
   
   composeClass () {
@@ -27,7 +22,12 @@ class Number extends React.Component {
       </div>
     );
   }
-  
+
 };
+
+Number.propTypes = {
+  number: React.PropTypes.number.isRequired,
+  isStatic: React.PropTypes.bool.isRequired
+}
 
 export default Number;

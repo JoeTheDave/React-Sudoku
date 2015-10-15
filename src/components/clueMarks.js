@@ -6,10 +6,6 @@ import _ from 'lodash';
 class ClueMarks extends React.Component {
   constructor (props) {
     super(props);
-
-    this.propTypes = {
-      marks: React.PropTypes.array.isRequired
-    }
   }
 
   render () {
@@ -24,5 +20,9 @@ class ClueMarks extends React.Component {
     );
   }
 };
+
+ClueMarks.propTypes = {
+  marks: React.PropTypes.array.isRequired
+}
 
 export default ClueMarks;

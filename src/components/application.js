@@ -9,7 +9,6 @@ import GridSquare from './gridSquare';
 class Application extends React.Component {
   constructor (props) {
     super(props);
-
     this.state = applicationStore.getData();
     this.updateState = this.updateState.bind(this);
   }
@@ -24,7 +23,7 @@ class Application extends React.Component {
     this.setState(applicationStore.getData());
   }
 
-  content () {
+  render () {
     if (this.state.sudokuGrid) {
       let componentClass = 'application-component' +
         (this.state.sudokuGrid.activeMarksMode ? ' active-marks-mode' : '') +
@@ -43,10 +42,6 @@ class Application extends React.Component {
     } else {
       return (<div></div>);
     }
-  }
-
-  render () {
-    return this.content();
   }
 
 };
