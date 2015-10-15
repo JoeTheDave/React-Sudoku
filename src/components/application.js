@@ -6,19 +6,25 @@ import globalActions from '../actions/globalActions';
 import applicationStore from '../stores/applicationStore';
 import GridSquare from './gridSquare';
 
-let Application = React.createClass({
-  getInitialState: function () {
-    return applicationStore.getData();
-  },
-  componentDidMount: function () {
+class Application extends React.Component {
+  constructor (props) {
+    super(props);
+
+    this.state = applicationStore.getData();
+    this.updateState = this.updateState.bind(this);
+  }
+
+  componentDidMount () {
     applicationStore.addChangeListener(this.updateState);
     applicationActions.initializeApplication();
     globalActions.registerGlobalEventHandlers();
-  },
-  updateState: function () {
+  }
+
+  updateState () {
     this.setState(applicationStore.getData());
-  },
-  content: function () {
+  }
+
+  content () {
     if (this.state.sudokuGrid) {
       let componentClass = 'application-component' +
         (this.state.sudokuGrid.activeMarksMode ? ' active-marks-mode' : '') +
@@ -37,10 +43,12 @@ let Application = React.createClass({
     } else {
       return (<div></div>);
     }
-  },
-  render: function () {
+  }
+
+  render () {
     return this.content();
   }
-});
+
+};
 
 export default Application;

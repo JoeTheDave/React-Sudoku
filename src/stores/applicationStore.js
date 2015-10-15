@@ -13,6 +13,8 @@ let SudokuGrid = require('../models/sudokuGrid');
 
 let applicationData = {};
 
+var lintTest = 'not used';
+
 let applicationStore = assign({}, EventEmitter.prototype, {
   getData: function () {
     return applicationData;

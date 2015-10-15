@@ -3,11 +3,16 @@
 import React from 'react';
 import _ from 'lodash';
 
-let ClueMarks = React.createClass({
-  propTypes: {
-    marks: React.PropTypes.array.isRequired
-  },
-  render: function () {
+class ClueMarks extends React.Component {
+  constructor (props) {
+    super(props);
+
+    this.propTypes = {
+      marks: React.PropTypes.array.isRequired
+    }
+  }
+
+  render () {
     return (
       <div className="clue-marks">
         {this.props.marks.map((mark, index) => {
@@ -18,6 +23,6 @@ let ClueMarks = React.createClass({
       </div>
     );
   }
-});
+};
 
 export default ClueMarks;

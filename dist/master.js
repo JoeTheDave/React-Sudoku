@@ -44153,7 +44153,15 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -44175,39 +44183,58 @@ var _gridSquare = require('./gridSquare');
 
 var _gridSquare2 = _interopRequireDefault(_gridSquare);
 
-var Application = _react2['default'].createClass({
-  displayName: 'Application',
+var Application = (function (_React$Component) {
+  _inherits(Application, _React$Component);
 
-  getInitialState: function getInitialState() {
-    return _storesApplicationStore2['default'].getData();
-  },
-  componentDidMount: function componentDidMount() {
-    _storesApplicationStore2['default'].addChangeListener(this.updateState);
-    _actionsApplicationActions2['default'].initializeApplication();
-    _actionsGlobalActions2['default'].registerGlobalEventHandlers();
-  },
-  updateState: function updateState() {
-    this.setState(_storesApplicationStore2['default'].getData());
-  },
-  content: function content() {
-    if (this.state.sudokuGrid) {
-      var componentClass = 'application-component' + (this.state.sudokuGrid.activeMarksMode ? ' active-marks-mode' : '') + (this.state.sudokuGrid.showAnswers ? ' show-answers' : '') + (this.state.sudokuGrid.puzzleIsComplete ? ' puzzle-complete' : '');
-      return _react2['default'].createElement(
-        'div',
-        { className: componentClass },
-        this.state.sudokuGrid.gridSquares.map(function (sudokuSquare, index) {
-          return _react2['default'].createElement(_gridSquare2['default'], { key: index, squareData: sudokuSquare });
-        }),
-        _react2['default'].createElement('div', { className: 'clear' })
-      );
-    } else {
-      return _react2['default'].createElement('div', null);
-    }
-  },
-  render: function render() {
-    return this.content();
+  function Application(props) {
+    _classCallCheck(this, Application);
+
+    _get(Object.getPrototypeOf(Application.prototype), 'constructor', this).call(this, props);
+
+    this.state = _storesApplicationStore2['default'].getData();
+    this.updateState = this.updateState.bind(this);
   }
-});
+
+  _createClass(Application, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      _storesApplicationStore2['default'].addChangeListener(this.updateState);
+      _actionsApplicationActions2['default'].initializeApplication();
+      _actionsGlobalActions2['default'].registerGlobalEventHandlers();
+    }
+  }, {
+    key: 'updateState',
+    value: function updateState() {
+      this.setState(_storesApplicationStore2['default'].getData());
+    }
+  }, {
+    key: 'content',
+    value: function content() {
+      if (this.state.sudokuGrid) {
+        var componentClass = 'application-component' + (this.state.sudokuGrid.activeMarksMode ? ' active-marks-mode' : '') + (this.state.sudokuGrid.showAnswers ? ' show-answers' : '') + (this.state.sudokuGrid.puzzleIsComplete ? ' puzzle-complete' : '');
+        return _react2['default'].createElement(
+          'div',
+          { className: componentClass },
+          this.state.sudokuGrid.gridSquares.map(function (sudokuSquare, index) {
+            return _react2['default'].createElement(_gridSquare2['default'], { key: index, squareData: sudokuSquare });
+          }),
+          _react2['default'].createElement('div', { className: 'clear' })
+        );
+      } else {
+        return _react2['default'].createElement('div', null);
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return this.content();
+    }
+  }]);
+
+  return Application;
+})(_react2['default'].Component);
+
+;
 
 exports['default'] = Application;
 module.exports = exports['default'];
@@ -44220,7 +44247,15 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -44230,26 +44265,40 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var ClueMarks = _react2['default'].createClass({
-  displayName: 'ClueMarks',
+var ClueMarks = (function (_React$Component) {
+  _inherits(ClueMarks, _React$Component);
 
-  propTypes: {
-    marks: _react2['default'].PropTypes.array.isRequired
-  },
-  render: function render() {
-    return _react2['default'].createElement(
-      'div',
-      { className: 'clue-marks' },
-      this.props.marks.map(function (mark, index) {
-        return _react2['default'].createElement(
-          'div',
-          { className: 'clue-mark', key: index },
-          mark
-        );
-      })
-    );
+  function ClueMarks(props) {
+    _classCallCheck(this, ClueMarks);
+
+    _get(Object.getPrototypeOf(ClueMarks.prototype), 'constructor', this).call(this, props);
+
+    this.propTypes = {
+      marks: _react2['default'].PropTypes.array.isRequired
+    };
   }
-});
+
+  _createClass(ClueMarks, [{
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        'div',
+        { className: 'clue-marks' },
+        this.props.marks.map(function (mark, index) {
+          return _react2['default'].createElement(
+            'div',
+            { className: 'clue-mark', key: index },
+            mark
+          );
+        })
+      );
+    }
+  }]);
+
+  return ClueMarks;
+})(_react2['default'].Component);
+
+;
 
 exports['default'] = ClueMarks;
 module.exports = exports['default'];
@@ -44262,7 +44311,15 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -44282,52 +44339,75 @@ var _clueMarks = require('./clueMarks');
 
 var _clueMarks2 = _interopRequireDefault(_clueMarks);
 
-var GridSquare = _react2['default'].createClass({
-  displayName: 'GridSquare',
+var GridSquare = (function (_React$Component) {
+  _inherits(GridSquare, _React$Component);
 
-  propTypes: {
-    squareData: _react2['default'].PropTypes.object.isRequired
-  },
-  convertStateToClassName: function convertStateToClassName(state) {
-    return state.split('_').join('-').toLowerCase();
-  },
-  composeClass: function composeClass() {
-    var id = this.props.squareData.id;
-    var className = 'grid-square ' + this.convertStateToClassName(this.props.squareData.state);
-    if (this.props.squareData.hasConflicts()) {
-      className += ' is-conflicted';
-    }
-    if (id >= 27 && id <= 35 || id >= 54 && id <= 62) {
-      className += ' top-border';
-    }
-    if ((id + 1) % 3 === 0 && (id + 1) % 9 !== 0) {
-      className += ' right-border';
-    }
-    return className;
-  },
-  gridSquareSelected: function gridSquareSelected() {
-    _actionsApplicationActions2['default'].gridSquareSelected(this.props.squareData);
-  },
-  content: function content() {
-    if (this.props.squareData.isStatic || this.props.squareData.userInput) {
-      return _react2['default'].createElement(_number2['default'], { isStatic: this.props.squareData.isStatic, number: this.props.squareData.isStatic ? this.props.squareData.number : this.props.squareData.userInput });
-    } else {
-      return _react2['default'].createElement(_clueMarks2['default'], { marks: this.props.squareData.clueMarks });
-    }
-  },
-  render: function render() {
-    return _react2['default'].createElement(
-      'div',
-      { className: this.composeClass(), onClick: this.gridSquareSelected },
-      _react2['default'].createElement(
-        'div',
-        { className: 'actual-square-value' },
-        this.props.squareData.number
-      ),
-      this.content()
-    );
+  function GridSquare(props) {
+    _classCallCheck(this, GridSquare);
+
+    _get(Object.getPrototypeOf(GridSquare.prototype), 'constructor', this).call(this, props);
+    this.gridSquareSelected = this.gridSquareSelected.bind(this);
+
+    this.propTypes = {
+      squareData: _react2['default'].PropTypes.object.isRequired
+    };
   }
-});
+
+  _createClass(GridSquare, [{
+    key: 'convertStateToClassName',
+    value: function convertStateToClassName(state) {
+      return state.split('_').join('-').toLowerCase();
+    }
+  }, {
+    key: 'composeClass',
+    value: function composeClass() {
+      var id = this.props.squareData.id;
+      var className = 'grid-square ' + this.convertStateToClassName(this.props.squareData.state);
+      if (this.props.squareData.hasConflicts()) {
+        className += ' is-conflicted';
+      }
+      if (id >= 27 && id <= 35 || id >= 54 && id <= 62) {
+        className += ' top-border';
+      }
+      if ((id + 1) % 3 === 0 && (id + 1) % 9 !== 0) {
+        className += ' right-border';
+      }
+      return className;
+    }
+  }, {
+    key: 'gridSquareSelected',
+    value: function gridSquareSelected() {
+      _actionsApplicationActions2['default'].gridSquareSelected(this.props.squareData);
+    }
+  }, {
+    key: 'content',
+    value: function content() {
+      if (this.props.squareData.isStatic || this.props.squareData.userInput) {
+        return _react2['default'].createElement(_number2['default'], { isStatic: this.props.squareData.isStatic, number: this.props.squareData.isStatic ? this.props.squareData.number : this.props.squareData.userInput });
+      } else {
+        return _react2['default'].createElement(_clueMarks2['default'], { marks: this.props.squareData.clueMarks });
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        'div',
+        { className: this.composeClass(), onClick: this.gridSquareSelected },
+        _react2['default'].createElement(
+          'div',
+          { className: 'actual-square-value' },
+          this.props.squareData.number
+        ),
+        this.content()
+      );
+    }
+  }]);
+
+  return GridSquare;
+})(_react2['default'].Component);
+
+;
 
 exports['default'] = GridSquare;
 module.exports = exports['default'];
@@ -44340,34 +44420,58 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var Number = _react2['default'].createClass({
-  displayName: 'Number',
+var Number = (function (_React$Component) {
+  _inherits(Number, _React$Component);
 
-  propTypes: {
-    number: _react2['default'].PropTypes.number.isRequired,
-    isStatic: _react2['default'].PropTypes.bool.isRequired
-  },
-  composeClass: function composeClass() {
-    var className = 'number';
-    if (this.props.isStatic) {
-      className += ' is-static';
-    }
-    return className;
-  },
-  render: function render() {
-    return _react2['default'].createElement(
-      'div',
-      { className: this.composeClass() },
-      this.props.number
-    );
+  function Number(props) {
+    _classCallCheck(this, Number);
+
+    _get(Object.getPrototypeOf(Number.prototype), 'constructor', this).call(this, props);
+
+    this.propTypes = {
+      number: _react2['default'].PropTypes.number.isRequired,
+      isStatic: _react2['default'].PropTypes.bool.isRequired
+    };
   }
-});
+
+  _createClass(Number, [{
+    key: 'composeClass',
+    value: function composeClass() {
+      var className = 'number';
+      if (this.props.isStatic) {
+        className += ' is-static';
+      }
+      return className;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        'div',
+        { className: this.composeClass() },
+        this.props.number
+      );
+    }
+  }]);
+
+  return Number;
+})(_react2['default'].Component);
+
+;
 
 exports['default'] = Number;
 module.exports = exports['default'];
@@ -45130,6 +45234,8 @@ var sudokuDataService = require('../services/SudokuDataService');
 var SudokuGrid = require('../models/sudokuGrid');
 
 var applicationData = {};
+
+var lintTest = 'not used';
 
 var applicationStore = assign({}, EventEmitter.prototype, {
   getData: function getData() {

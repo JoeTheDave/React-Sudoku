@@ -6,14 +6,21 @@ import { gridSquareStates } from '../flux/constants';
 import Number from './number';
 import ClueMarks from './clueMarks';
 
-let GridSquare = React.createClass({
-  propTypes: {
-    squareData: React.PropTypes.object.isRequired
-  },
-  convertStateToClassName: function (state) {
+class GridSquare extends React.Component {
+  constructor (props) {
+    super(props);
+    this.gridSquareSelected = this.gridSquareSelected.bind(this);
+
+    this.propTypes = {
+      squareData: React.PropTypes.object.isRequired
+    }
+  }
+
+  convertStateToClassName (state) {
     return state.split('_').join('-').toLowerCase();
-  },
-  composeClass: function () {
+  }
+
+  composeClass () {
     let id = this.props.squareData.id;
     let className = 'grid-square ' + this.convertStateToClassName(this.props.squareData.state);
     if (this.props.squareData.hasConflicts()) {
@@ -26,18 +33,21 @@ let GridSquare = React.createClass({
       className += ' right-border';
     }
     return className;
-  },
-  gridSquareSelected: function () {
+  }
+
+  gridSquareSelected () {
     applicationActions.gridSquareSelected(this.props.squareData);
-  },
-  content: function () {
+  }
+
+  content () {
     if (this.props.squareData.isStatic || this.props.squareData.userInput) {
       return (<Number isStatic={this.props.squareData.isStatic} number={this.props.squareData.isStatic ? this.props.squareData.number : this.props.squareData.userInput} />);
     } else {
       return (<ClueMarks marks={this.props.squareData.clueMarks} />);
     }
-  },
-  render: function () {
+  }
+
+  render () {
     return (
       <div className={this.composeClass()} onClick={this.gridSquareSelected}>
         <div className="actual-square-value">{this.props.squareData.number}</div>
@@ -45,6 +55,7 @@ let GridSquare = React.createClass({
       </div>
     );
   }
-});
+
+};
 
 export default GridSquare;

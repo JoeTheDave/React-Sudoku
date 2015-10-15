@@ -8,6 +8,7 @@ var babelify = require('babelify');
 var source = require('vinyl-source-stream');
 var sass = require('gulp-sass');
 var concat = require('gulp-concat');
+var eslint = require('gulp-eslint');
 
 var config = {
   dist: './dist',
@@ -20,6 +21,13 @@ var config = {
 //Clean
 gulp.task('clean', function() {
   del(config.dist);
+});
+
+//Lint
+gulp.task('jsx-lint', function () {
+    gulp.src(['./*.js', './src/*.js', './src/actions/*.js', './src/flux/*.js', './src/services/*.js', './src/stores/*.js', './src/components/**/*.js'])
+        .pipe(eslint())
+        .pipe(eslint.format());
 });
 
 //Browserify
@@ -44,12 +52,12 @@ gulp.task('sass', function() {
 
 //Watch
 gulp.task('watch', function () {
-  gulp.watch(config.jsSources, ['browserify']);
+  gulp.watch(config.jsSources, ['jsx-lint', 'browserify']);
   gulp.watch(config.styleSources, ['sass']);
 });
 
 //Default
-gulp.task('default', ['clean', 'sass', 'browserify', 'watch']);
+gulp.task('default', ['clean', 'sass', 'jsx-lint', 'browserify', 'watch']);
 
 //Setup Production Environment
 gulp.task('setup-prod-environment', function () {
